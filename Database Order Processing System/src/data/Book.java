@@ -2,8 +2,10 @@ package data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
-public class Book extends Record{
+
+public class Book extends Properties{
 	public String getIsbn(){
 		return getProperty("isbn");
 	}
@@ -18,6 +20,9 @@ public class Book extends Record{
 	}
 	public String getPublishYear(){
 		return getProperty("publication_year");
+	}
+	public int getCategoryId(){
+		return Integer.parseInt(getProperty("category_id"));
 	}
 	public String getCategory(){
 		return getProperty("category");

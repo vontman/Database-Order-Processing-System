@@ -1,11 +1,16 @@
 package data;
 
-public class User extends Record{
+import java.util.Properties;
+
+public class User extends Properties{
 	public User() {
 		
 	}
 	public String getUserName(){
 		return getProperty("username");
+	}
+	public String getPassword(){
+		return getProperty("password");
 	}
 	public String getFirstName(){
 		return getProperty("firstname");

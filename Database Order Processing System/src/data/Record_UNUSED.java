@@ -2,7 +2,7 @@ package data;
 
 import java.util.Properties;
 
-public abstract class Record {
+public abstract class Record_UNUSED {
 	private Properties props = new Properties();
 	
 	protected final String getProperty(String propery){

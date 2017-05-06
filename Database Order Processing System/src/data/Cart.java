@@ -1,5 +1,7 @@
 package data;
 
-public class Cart extends Record{
+import java.util.Properties;
+
+public class Cart extends Properties{
 
 }

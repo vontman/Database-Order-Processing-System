@@ -1,6 +1,8 @@
 package data;
 
-public class Order extends Record{
+import java.util.Properties;
+
+public class Order extends Properties{
 	public Book getBook(){
 		return null;
 	}
