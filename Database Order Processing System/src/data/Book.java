@@ -1,7 +1,5 @@
 package data;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 
@@ -30,9 +28,8 @@ public class Book extends Properties{
 	public int getThreshold(){
 		return Integer.parseInt(getProperty("threshold"));
 	}
-	public List<String> getAuthors(){
-		//TODO
-		return new ArrayList<String>();
+	public String[] getAuthors(){
+		return getProperty("authors").split(",");
 	}
 	public String getPublisher(){
 		return getProperty("publisher_name");

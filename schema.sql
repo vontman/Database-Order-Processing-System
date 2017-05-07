@@ -55,22 +55,22 @@ CREATE TABLE IF NOT EXISTS `Book_Order`.`Book` (
   `ISBN` VARCHAR(40) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
   `Price` INT UNSIGNED NOT NULL,
-  `Copies` INT UNSIGNED NOT NULL,
+  `Copies` INT NOT NULL, #########################not unsigned to operate the trigger
   `Publication_Year` DATE NOT NULL,
   `Category_ID` INT NOT NULL,
-  `Name` VARCHAR(45) NOT NULL,
+  `Publisher_Name` VARCHAR(45) NOT NULL,
   `Threshold` INT ZEROFILL NOT NULL,
   PRIMARY KEY (`ISBN`),
   UNIQUE INDEX `title_UNIQUE` (`title` ASC),
   INDEX `fk_Book_Category1_idx` (`Category_ID` ASC),
-  INDEX `fk_Book_Publisher1_idx` (`Name` ASC),
+  INDEX `fk_Book_Publisher1_idx` (`Publisher_Name` ASC),
   CONSTRAINT `fk_Book_Category1`
     FOREIGN KEY (`Category_ID`)
     REFERENCES `Book_Order`.`Category` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Book_Publisher1`
-    FOREIGN KEY (`Name`)
+    FOREIGN KEY (`Publisher_Name`)
     REFERENCES `Book_Order`.`Publisher` (`Name`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -83,6 +83,8 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `Book_Order`.`User` ;
 
 CREATE TABLE IF NOT EXISTS `Book_Order`.`User` (
+  `FirstName` VARCHAR(45) NOT NULL,
+  `LastName` VARCHAR(45) NOT NULL,
   `Username` VARCHAR(45) NOT NULL,
   `Password` VARCHAR(45) NOT NULL,
   `Created` DATE NULL,
@@ -174,9 +176,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `Book_Order`.`Order`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Book_Order`.`Order` ;
+DROP TABLE IF EXISTS `Book_Order`.`Orders` ;
 
-CREATE TABLE IF NOT EXISTS `Book_Order`.`Order` (
+CREATE TABLE IF NOT EXISTS `Book_Order`.`Orders` (
   `Book_ISBN` VARCHAR(40) NOT NULL,
   `Copies` INT NOT NULL,
   PRIMARY KEY (`Book_ISBN`),
@@ -194,7 +196,7 @@ DELIMITER $$
 USE `Book_Order`$$
 DROP TRIGGER IF EXISTS `Book_Order`.`Book_BEFORE_UPDATE` $$
 USE `Book_Order`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `mydb`.`Book_BEFORE_UPDATE` BEFORE UPDATE ON `Book` FOR EACH ROW
+CREATE DEFINER = CURRENT_USER TRIGGER `Book_Order`.`Book_BEFORE_UPDATE` BEFORE UPDATE ON `Book` FOR EACH ROW
 BEGIN
 	declare book_count int;
     set book_count = New.Copies;
@@ -215,13 +217,40 @@ BEGIN
     set book_count = New.Copies;
     
     if book_count < New.threshold then
-		Insert into Book_Order.order values (New.ISBN, New.threshold);
+		Insert into orders values (New.ISBN, New.threshold);
 	end if;
 END;$$
 
+USE `Book_Order`$$
+DROP TRIGGER IF EXISTS `Book_Order`.`Order_BEFORE_DELETE` $$
+USE `Book_Order`$$
+CREATE DEFINER = CURRENT_USER TRIGGER `Book_Order`.`Order_BEFORE_DELETE` BEFORE DELETE ON `Orders` FOR EACH ROW
+BEGIN
+    declare copies_old int;
+   select copies from book where ISBN = old.BOOK_ISBN into copies_old;
+    if old.copies <  copies_old then
+			SIGNAL SQLSTATE '45000'
+			SET MESSAGE_TEXT = 'How on Earth :)';
+	end if;
+END;$$
 
 DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+###############################SCHEMA TEST##################################
+use `Book_Order`;
+Insert into Category values (1, 'programming');
+Insert into Publisher values ('Gayle lack macdwel', 'a', '89723894');
+Insert into book values ('1', 'Cracking the coding interview', 300, 7, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
+Insert into book values ('2', 'Introduction to Algorithms', 300, 5, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
+Insert into book values ('3', 'Competetive', 300, 4, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
+Insert into book values ('4', 'No Name', 300, 6, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
+#Update book set book.Copies = -1 where book.ISBN = '1';
+Update book set book.Copies = 1 where ISBN = '4';
+select * from orders;
+select copies from book where isbn = '4';
+delete from orders where book_ISBN = '4';
+select * from book_order.orders;

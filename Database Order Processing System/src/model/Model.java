@@ -79,7 +79,7 @@ public class Model {
 		StringBuilder builder = new StringBuilder( "SELECT * FROM "+tableName+" WHERE");
 		for(int i = 0 ; i < cols.size() ; i ++){
 			if(i > 0)
-				builder.append(",");
+				builder.append(" AND ");
 			builder.append(cols.get(i));
 			builder.append("=");
 			builder.append(vals.get(i));
