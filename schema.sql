@@ -174,7 +174,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Book_Order`.`Order`
+-- Table `Book_Order`.`Orders`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `Book_Order`.`Orders` ;
 
@@ -217,7 +217,7 @@ BEGIN
     set book_count = New.Copies;
     
     if book_count < New.threshold then
-		Insert into orders values (New.ISBN, New.threshold);
+		Insert into Orders values (New.ISBN, New.threshold);
 	end if;
 END;$$
 
@@ -227,11 +227,8 @@ USE `Book_Order`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `Book_Order`.`Order_BEFORE_DELETE` BEFORE DELETE ON `Orders` FOR EACH ROW
 BEGIN
     declare copies_old int;
-   select copies from book where ISBN = old.BOOK_ISBN into copies_old;
-    if old.copies <  copies_old then
-			SIGNAL SQLSTATE '45000'
-			SET MESSAGE_TEXT = 'How on Earth :)';
-	end if;
+    select copies from book where book.ISBN = old.Book_ISBN into copies_old;
+    update book set copies = copies_old + old.copies where book.ISBN = old.Book_ISBN;
 END;$$
 
 DELIMITER ;
@@ -244,13 +241,13 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 use `Book_Order`;
 Insert into Category values (1, 'programming');
 Insert into Publisher values ('Gayle lack macdwel', 'a', '89723894');
-Insert into book values ('1', 'Cracking the coding interview', 300, 7, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
-Insert into book values ('2', 'Introduction to Algorithms', 300, 5, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
-Insert into book values ('3', 'Competetive', 300, 4, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
-Insert into book values ('4', 'No Name', 300, 6, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
-#Update book set book.Copies = -1 where book.ISBN = '1';
-Update book set book.Copies = 1 where ISBN = '4';
-select * from orders;
-select copies from book where isbn = '4';
-delete from orders where book_ISBN = '4';
-select * from book_order.orders;
+Insert into Book values ('1', 'Cracking the coding interview', 300, 7, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
+Insert into Book values ('2', 'Introduction to Algorithms', 300, 5, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
+Insert into Book values ('3', 'Competetive', 300, 4, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
+Insert into Book values ('4', 'No Name', 300, 6, date('2002-12-2'), 1, 'Gayle lack macdwel', 2);
+#Update Book set Book.Copies = -1 where Book.ISBN = '1';
+Update Book set Book.Copies = 1 where ISBN = '4';
+select * from Orders;
+select Copies from Book where ISBN = '4';
+#select * from Orders where Book_ISBN = '4';
+delete from Orders where Book_ISBN = '4';
