@@ -56,6 +56,21 @@ public class Model {
 				+") VALUES ("+String.join(",", cols)+");";
 		executeCommand(stmnt);
 	}
+	public void delete(String tableName, List<String>cols, List<String>vals) throws SQLException{
+		if(cols.size() != vals.size())
+			throw new RuntimeException("Invalid call with incompatable cols and vals.");
+		StringBuilder builder = new StringBuilder( "DELETE FROM "+tableName+" ");
+		for(int i = 0 ; i < cols.size() ; i ++){
+			if(i > 0)
+				builder.append(" AND ");
+			else
+				builder.append(" WHERE ");
+			builder.append(cols.get(i));
+			builder.append("='");
+			builder.append(vals.get(i)+"'");
+		}
+		executeCommand(builder.toString());
+	}
 	public void update(String tableName, List<String>cols, List<String>vals, String keyName, String keyValue) throws SQLException{
 		if(cols.size() != vals.size())
 			throw new RuntimeException("Invalid call with incompatable cols and vals.");
@@ -64,25 +79,27 @@ public class Model {
 			if(i > 0)
 				builder.append(",");
 			builder.append(cols.get(i));
-			builder.append("=");
-			builder.append(vals.get(i));
+			builder.append("='");
+			builder.append(vals.get(i)+"'");
 		}
 		builder.append(" WHERE ");
 		builder.append(keyName);
-		builder.append("=");
-		builder.append(keyValue);
+		builder.append("='");
+		builder.append(keyValue+"'");
 		executeCommand(builder.toString());
 	}
 	public ResultSet select(String tableName, List<String>cols, List<String>vals) throws SQLException{
 		if(cols.size() != vals.size())
 			throw new RuntimeException("Invalid call with incompatable cols and vals.");
-		StringBuilder builder = new StringBuilder( "SELECT * FROM "+tableName+" WHERE");
+		StringBuilder builder = new StringBuilder( "SELECT * FROM "+tableName+" ");
 		for(int i = 0 ; i < cols.size() ; i ++){
 			if(i > 0)
 				builder.append(" AND ");
+			else
+				builder.append(" WHERE ");
 			builder.append(cols.get(i));
-			builder.append("=");
-			builder.append(vals.get(i));
+			builder.append("='");
+			builder.append(vals.get(i)+"'");
 		}
 		return executeCommand(builder.toString());
 	}

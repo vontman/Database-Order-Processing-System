@@ -73,4 +73,33 @@ public class UserModel {
 			return null;
 		}
 	}
+	public static List<User> getUsers() throws SQLException{
+
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		
+		ResultSet result = model.select("USER", cols, vals);
+		List<User>users = new ArrayList<User>();
+		while(result.next()){
+			User user = new User();
+			user.setProperty("username", result.getString("username"));
+			user.setProperty("firstname", result.getString("firstname"));
+			user.setProperty("lastname", result.getString("lastname"));
+			user.setProperty("password", result.getString("password"));
+			users.add(user);
+		}
+		return users;
+		
+	}
+
+	public static boolean removeUser(String username) throws SQLException{
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("username");
+		vals.add(username);
+		
+		model.delete("USER", cols, vals);
+		System.out.println("user deleted successfully.");
+		return true;
+	}
 }

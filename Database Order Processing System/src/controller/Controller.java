@@ -28,7 +28,6 @@ public class Controller implements ViewListener{
 
 	@Override
 	public List<Book> bookSearch(Book book) {
-		BookModel.getBook(book.getIsbn());
 		return null;
 	}
 
