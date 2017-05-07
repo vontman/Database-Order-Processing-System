@@ -109,7 +109,7 @@ public class BookModel {
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
 		StringBuilder builder = new StringBuilder();
-		cols.add("isbn");
+		cols.add("BOOK_ISBN");
 		vals.add(isbn);
 		
 		ResultSet result = model.select("BOOK_HAS_AUTHORS ", cols, vals);
@@ -119,7 +119,6 @@ public class BookModel {
 			builder.append(result.getString("authors_name"));
 		}
 		return builder.toString();
-	
 	}
 	
 	public static List<Book> getBooks(List<String> cols, List<String> vals, String category, String author) throws SQLException {
