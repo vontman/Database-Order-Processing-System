@@ -35,7 +35,7 @@ public class BookModel {
       DONE :  add new user
       DONE : update user
       DONE : view users
-      TODO : check passwrod validity
+      DONE : check passwrod validity
       
       Purchaces:
       TODO : new purchace(quantity, book, price, user)
@@ -235,6 +235,40 @@ public class BookModel {
 		
 		model.delete("AUTHORS", cols, vals);
 		System.out.println("Author deleted successfully.");
+		return true;
+	}
+	public static boolean addPurchace(List<String>bookIsbn, List<Integer>copies, String username) throws SQLException{
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		
+		cols.add("username");
+		vals.add(username);
+		String id = null;
+		ResultSet rs = model.insert("Purchaces", cols, vals);
+		if(rs.next()){
+			id = rs.getString("ID");
+		}else{
+			return false;
+		}
+		for(int i = 0  ; i < bookIsbn.size() ; i ++){
+			addPurchaceMini(id, bookIsbn.get(i), copies.get(i));
+		}
+		
+		
+		return true;
+	}
+	private static boolean addPurchaceMini(String purchaceId, String isbn, int copies)throws SQLException{
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		
+		cols.add("ISBN");
+		cols.add(isbn);
+		cols.add("Purchaces_ID");
+		vals.add(purchaceId);
+		cols.add("Quantity");
+		vals.add(""+copies);
+		
+		model.insert("BOOK_HAS_PURCHACES", cols, vals);
 		return true;
 	}
       

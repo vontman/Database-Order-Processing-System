@@ -48,13 +48,18 @@ public class Model {
 		System.out.println("Executing command : "+command);
 		return statement.executeQuery(command);
 	}
-	public void insert(String tableName, List<String>cols, List<String>vals) throws SQLException{
+	public ResultSet executeUpdate(String command) throws SQLException{
+		System.out.println("Executing update command : "+command);
+		statement.executeUpdate(command);
+		return statement.getGeneratedKeys();
+	}
+	public ResultSet insert(String tableName, List<String>cols, List<String>vals) throws SQLException{
 		if(cols.size() != vals.size())
 			throw new RuntimeException("Invalid call with incompatable cols and vals.");
 		String stmnt = "INSERT INTO "+tableName+
 				" ("+String.join(",", cols)
 				+") VALUES ("+String.join(",", cols)+");";
-		executeCommand(stmnt);
+		return executeUpdate(stmnt);
 	}
 	public void delete(String tableName, List<String>cols, List<String>vals) throws SQLException{
 		if(cols.size() != vals.size())
@@ -69,7 +74,7 @@ public class Model {
 			builder.append("='");
 			builder.append(vals.get(i)+"'");
 		}
-		executeCommand(builder.toString());
+		executeUpdate(builder.toString());
 	}
 	public void update(String tableName, List<String>cols, List<String>vals, String keyName, String keyValue) throws SQLException{
 		if(cols.size() != vals.size())
@@ -86,7 +91,7 @@ public class Model {
 		builder.append(keyName);
 		builder.append("='");
 		builder.append(keyValue+"'");
-		executeCommand(builder.toString());
+		executeUpdate(builder.toString());
 	}
 	public ResultSet select(String tableName, List<String>cols, List<String>vals) throws SQLException{
 		if(cols.size() != vals.size())

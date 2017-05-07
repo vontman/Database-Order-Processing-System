@@ -73,6 +73,22 @@ public class UserModel {
 			return null;
 		}
 	}
+	public static boolean checkUser(String username, String password) throws SQLException{
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		
+		cols.add("username");
+		vals.add(username);
+		cols.add("password");
+		vals.add(password);
+		User user = new User();
+		ResultSet result = model.select("USER", cols, vals);
+		if(result.next()){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	public static List<User> getUsers() throws SQLException{
 
 		List<String>cols = new ArrayList<String>();
