@@ -11,7 +11,7 @@ import data.User;
 
 public class UserModel {
 	private static Model model = Model.instance;
-	public static boolean createUser(User user){
+	public static boolean createUser(User user) throws SQLException{
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
 		cols.add("firstname");
@@ -26,15 +26,10 @@ public class UserModel {
 		vals.add("0");
 		cols.add("created");
 		vals.add(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-		
-		try {
-			model.insert("USER", cols, vals);
-			System.out.println("User added successfully.");
-			return true;
-		} catch (SQLException e) {
-			System.out.println("User not added, Error : "+e.getMessage());
-			return false;
-		}
+			
+		model.insert("USER", cols, vals);
+		System.out.println("User added successfully.");
+		return true;
 	}
 	
 	public static boolean updateUser(User user, String userName){
@@ -58,7 +53,7 @@ public class UserModel {
 			return false;
 		}
 	}
-	public static User getUser(String userName){
+	public static User getUser(String userName) throws SQLException{
 
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
@@ -66,21 +61,16 @@ public class UserModel {
 		cols.add("username");
 		vals.add(userName);
 		User user = new User();
-		try{
-			ResultSet result = model.select("USER", cols, vals);
-			if(result.next()){
-				user.setProperty("username", result.getString("username"));
-				user.setProperty("firstname", result.getString("firstname"));
-				user.setProperty("lastname", result.getString("lastname"));
-				user.setProperty("password", result.getString("password"));
-				return user;
-			}else{
-				System.out.println("User not found");
-				return null;
-			}
-		}catch(SQLException e){
-			System.out.println("ERROR when finding user :"+e.getMessage());
+		ResultSet result = model.select("USER", cols, vals);
+		if(result.next()){
+			user.setProperty("username", result.getString("username"));
+			user.setProperty("firstname", result.getString("firstname"));
+			user.setProperty("lastname", result.getString("lastname"));
+			user.setProperty("password", result.getString("password"));
+			return user;
+		}else{
+			System.out.println("User not found");
+			return null;
 		}
-		return null;
 	}
 }
