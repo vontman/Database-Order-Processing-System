@@ -6,6 +6,7 @@ import data.Book;
 import data.Cart;
 import data.Order;
 import data.User;
+import model.BookModel;
 
 public class Controller implements ViewListener{
 
@@ -27,7 +28,7 @@ public class Controller implements ViewListener{
 
 	@Override
 	public List<Book> bookSearch(Book book) {
-		// TODO Auto-generated method stub
+		BookModel.getBook(book.getIsbn());
 		return null;
 	}
 
