@@ -39,10 +39,10 @@ public class BookModel {
       DONE : check passwrod validity
       
       Purchaces:
-      TODO : new purchace(quantity, book, price, user)
+      DONE : checkout
       
       Credit Card:
-      TODO : check card validity
+      DONE : check card validity
       
       
       
@@ -59,8 +59,7 @@ public class BookModel {
 		model.insert("BOOK", cols, vals);
 		System.out.println("Book added successfully.");
 		return true;
-	}
-	
+	}	
 	public static boolean updateBook(Book book, String isbn) throws SQLException {
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
@@ -257,10 +256,29 @@ public class BookModel {
 		System.out.println("Author deleted successfully.");
 		return true;
 	}
-	public static boolean addPurchase(List<String>bookIsbn, List<Integer>copies, String username) throws SQLException{
+	public static boolean checkOut(List<String>bookIsbn, List<Integer>copies, String username, String cardNum, int totPrice) throws SQLException{
+		try{
+			model.setAutoCommit(false);
+			int balance = UserModel.checkCreditCard(cardNum, totPrice, username);
+			UserModel.updateCreditCard(cardNum, balance-totPrice);
+			addPurchases(bookIsbn, copies, username);
+			for(int i = 0 ;  i < bookIsbn.size() ; i ++){
+				Book book = getBook(bookIsbn.get(i));
+				book.setProperty("copies", ""+(book.getCopies()-copies.get(i)));
+				updateBook(book, bookIsbn.get(i));
+			}
+			model.commit();
+		}catch(Exception e){
+			throw e;
+		}finally{
+			model.setAutoCommit(true);
+		}
+		
+		return true;
+	}
+	private static boolean addPurchases(List<String>bookIsbn, List<Integer>copies, String username) throws SQLException{
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
-		
 		cols.add("username");
 		vals.add(username);
 		String id = null;
@@ -273,8 +291,6 @@ public class BookModel {
 		for(int i = 0  ; i < bookIsbn.size() ; i ++){
 			addPurchaseMini(id, bookIsbn.get(i), copies.get(i));
 		}
-		
-		
 		return true;
 	}
 	private static boolean addPurchaseMini(String purchaceId, String isbn, int copies)throws SQLException{

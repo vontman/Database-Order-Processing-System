@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import data.Book;
 import data.User;
 
 public class UserModel {
@@ -119,19 +120,54 @@ public class UserModel {
 		return true;
 	}
 	
-	public static boolean checkCreditCard (String number, int price) throws SQLException {
+	public static int checkCreditCard (String number, int price, String username) throws SQLException {
 		List<String> cols = new ArrayList<String>();
 		List<String> vals = new ArrayList<String>();
 		cols.add("Number");
 		vals.add(number);
-		ResultSet hamada = model.select("creditCard", cols, vals);
-		String string = hamada.getString("ExpirationDate");
-		int balance = Integer.parseInt(hamada.getString("Balance"));
+		cols.add("username");
+		vals.add(username);
+		ResultSet result = model.select("creditCard", cols, vals);
+		if(!result.next()){
+			throw new SQLException("Card not found.");
+		}
+		String string = result.getString("ExpirationDate");
+		int balance = Integer.parseInt(result.getString("Balance"));
 		if (balance < price) {
-			return false;
+			throw new SQLException("Balance not enough.");
 		}
 		string = new SimpleDateFormat("yyyy-MM-dd").format(string);
 		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		return string.compareTo(date) >= 0;
+		if(string.compareTo(date) < 0){
+			throw new SQLException("Card is expired.");
+		}
+		return result.getInt("balance");
 	}
+	public static boolean createCreditCard(String cardNum, String passCode, String username, String expDate, int balance) throws SQLException {
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("number");
+		vals.add(cardNum);
+		cols.add("pin");
+		vals.add(passCode);
+		cols.add("user_username");
+		vals.add(username);
+		cols.add("balance");
+		vals.add(""+balance);
+		cols.add("expirationdate");
+		vals.add(expDate);
+		model.insert("creditcard", cols, vals);
+		System.out.println("card added successfully.");
+		return true;
+	}
+	public static boolean updateCreditCard(String cardNum, int newBalance) throws SQLException {
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("balance");
+		vals.add(""+newBalance);
+		model.update("creditcard", cols, vals, "number", cardNum);
+		System.out.println("Card updated successfully.");
+		return true;
+	}
+
 }
