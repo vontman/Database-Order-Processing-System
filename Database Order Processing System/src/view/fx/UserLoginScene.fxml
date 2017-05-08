@@ -6,38 +6,28 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2"
-	fx:controller="controller.LoginSceneController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.LoginSceneController">
   <children>
     <VBox alignment="CENTER_LEFT" layoutX="157.0" layoutY="0.0" prefHeight="400.0" prefWidth="286.0" spacing="20.0">
       <children>
-        <Label fx:id="errorMsgLbl" text="" wrapText="false" />
+        <Label fx:id="errorMsgLbl" prefHeight="38.0" prefWidth="286.0" text="Error" textFill="RED" wrapText="true" />
         <VBox>
           <children>
-            <Label text="User Name:" textAlignment="LEFT">
-              <labelFor>
-                <TextField fx:id="userNameTF" prefWidth="200.0" promptText="username" />
-              </labelFor>
-            </Label>
-            <fx:reference source="userNameTF" />
+            <Label text="User Name:" textAlignment="LEFT" />
+            <TextField fx:id="userNameTF" prefWidth="200.0" promptText="username" />
           </children>
         </VBox>
         <VBox>
           <children>
-            <Label text="Password:" textAlignment="LEFT">
-              <labelFor>
-                <TextField id="userNameTF" fx:id="passwordTF" prefWidth="200.0" promptText="username" />
-              </labelFor>
-            </Label>
+            <Label text="Password:" textAlignment="LEFT" />
             <PasswordField fx:id="passwordPF" prefWidth="200.0" promptText="password" />
           </children>
         </VBox>
         <VBox alignment="CENTER" spacing="10.0">
           <children>
-            <Button fx:id="logInBtn" defaultButton="true" minWidth="-1.0" mnemonicParsing="false" prefWidth="150.0" text="Log in" textOverrun="CLIP" 
-             onAction="#handlelogInBtnAction" />
+            <Button fx:id="logInBtn" defaultButton="true" minWidth="-1.0" mnemonicParsing="false" onAction="#handleLogInBtnAction" prefWidth="150.0" text="Log in" textOverrun="CLIP" />
             <Label text="Or" />
-            <Button id="logInBtn" fx:id="signUpBtn" mnemonicParsing="false" prefWidth="150.0" text="Sign up" />
+            <Button id="logInBtn" fx:id="signUpBtn" mnemonicParsing="false" onAction="#handleSignUpBtnAction" prefWidth="150.0" text="Sign up" />
           </children>
         </VBox>
       </children>

@@ -3,6 +3,8 @@ package controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import controller.Validator.ValidationException;
+import data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -36,6 +38,7 @@ public class LoginSceneController {
     @FXML
     private TextField userNameTF;
 
+    private Controller ctrl;
 
     @FXML
     void initialize() {
@@ -45,16 +48,38 @@ public class LoginSceneController {
         assert passwordTF != null : "fx:id=\"passwordTF\" was not injected: check your FXML file 'UserLoginScene.fxml'.";
         assert signUpBtn != null : "fx:id=\"signUpBtn\" was not injected: check your FXML file 'UserLoginScene.fxml'.";
         assert userNameTF != null : "fx:id=\"userNameTF\" was not injected: check your FXML file 'UserLoginScene.fxml'.";
+
+        ctrl = Controller.getInstance();
+
+        errorMsgLbl.setText("");
     }
-    
+
+    @FXML
+    protected void handleLogInBtnAction(ActionEvent e) {
+        String userName = userNameTF.getText();
+        String password = passwordPF.getText();
+        try {
+            Validator.validateUserName(userName);
+            Validator.validatePassword(password);
+            User user = ctrl.userLogin(userName, password);
+            if (user == null) {
+                errorMsgLbl.setText(
+                        "make sure that your username and password are correct");
+            } else {
+                ctrl.viewUserDashBoard(user);
+            }
+        } catch (ValidationException ex) {
+            errorMsgLbl.setText(ex.getMessage());
+        }
+    }
+
     @FXML
     protected void handleSignUpBtnAction(ActionEvent e) {
-        
-    }
-    
-    @FXML
-    protected void handleSignUpBtnAction(ActionEvent e) {
-        
+        try {
+            ctrl.viewUserSignup();
+        } catch (Exception ex) {
+            
+        }
     }
 
 }

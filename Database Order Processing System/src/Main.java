@@ -1,8 +1,6 @@
 import java.sql.SQLException;
 
 import model.BookModel;
-import model.Model;
-import model.UserModel;
 
 public class Main {
 

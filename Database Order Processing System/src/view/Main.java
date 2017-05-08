@@ -1,5 +1,8 @@
 package view;
 
+import controller.Controller;
+import controller.DashBoardController;
+import data.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,13 +15,54 @@ public class Main extends Application {
         launch(args);
     }
 
+    private Scene dashboardScene;
+
+    private Stage primaryStage;
+
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("./fx/UserLoginScene.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root));
+    public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
+        Controller.getInstance().setMainWindow(this);
+        switchToLogin();
         primaryStage.show();
     }
 
+    public void switchToLogin() throws Exception {
+        if (primaryStage != null) {
+            Parent root = FXMLLoader
+                    .load(getClass().getResource("fx/UserLoginScene.fxml"));
+            primaryStage.setScene(new Scene(root));
+            primaryStage.setTitle("Book Shopping Login");
+        }
+    }
+
+    public void switchToSignUp() throws Exception {
+        if (this.primaryStage != null) {
+            Parent root = FXMLLoader
+                    .load(getClass().getResource("./fx/UserSignUpScene.fxml"));
+            primaryStage.setTitle("Book Shopping Sign up");
+            primaryStage.setScene(new Scene(root));
+        }
+    }
+
+    public void switchToMain(User user) throws Exception {
+        if (this.primaryStage != null) {
+            if (dashboardScene == null) {
+                FXMLLoader fxmlLoader = new FXMLLoader(
+                        getClass().getResource("fx/UserDashboardScene.fxml"));
+                Parent root = (Parent) fxmlLoader.load();
+                DashBoardController udController = fxmlLoader
+                        .<DashBoardController> getController();
+                Controller.getInstance().setDashBoardController(udController);
+                dashboardScene = new Scene(root);
+            }
+            if (user.isManager())
+                primaryStage.setTitle("Book Shopping - Manager!");
+            else
+                primaryStage.setTitle("Book Shopping!");
+            primaryStage.setScene(dashboardScene);
+            System.out.println("here");
+        }
+    }
 
 }

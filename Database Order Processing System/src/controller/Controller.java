@@ -6,99 +6,146 @@ import data.Book;
 import data.Cart;
 import data.Order;
 import data.User;
-import model.BookModel;
+import view.Main;
 
-public class Controller implements ViewListener{
+public class Controller {
 
-    private Controller() {}
-    
-    
-    
-	/*(non-Javadoc)
-	 * @see controller.ViewListener#userLogin(data.User)
-	 */
-	@Override
-	public boolean userLogin(User user) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    private User dummyUser, dummyMngr;
+    private User currUser;
 
-	@Override
-	public boolean userSignup(User user) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    private Main mainWindow;
+    private DashBoardController udController;
 
-	@Override
-	public List<Book> bookSearch(Book book) {
-		return null;
-	}
+    private Controller() {
+        dummyUser = new User();
+        dummyMngr = new User();
+        dummyUser.setProperty("username", "u");
+        dummyMngr.setProperty("username", "m");
+        dummyUser.setProperty("password", "123");
+        dummyMngr.setProperty("password", "012");
+        dummyMngr.setProperty("manager", "true");
+    }
 
-	@Override
-	public boolean addBook(Book book) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    private static Controller instance;
 
-	@Override
-	public boolean updateBook(Book book) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public static Controller getInstance() {
+        if (instance == null)
+            instance = new Controller();
+        return instance;
+    }
 
-	@Override
-	public boolean placeOrder(Order order) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public void setMainWindow(Main window) {
+        this.mainWindow = window;
+    }
 
-	@Override
-	public boolean confirmOrder(Order order) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public void setDashBoardController(DashBoardController udController) {
+        this.udController = udController;
+    }
 
-	@Override
-	public boolean addToCart(Book book) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    /**
+     * @return User instance if exists or null if not exists
+     */
+    public User userLogin(String userName, String password) {
+        if (userName.equals(dummyUser.getUserName())
+                && password.equals(dummyUser.getPassword()))
+            return dummyUser;
+        if (userName.equals(dummyMngr.getUserName())
+                && password.equals(dummyMngr.getPassword()))
+            return dummyMngr;
+        return null;
+    }
 
-	@Override
-	public boolean checkOutCart(Cart cart) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    /**
+     * @return the new User instance if added successfully or null if not add
+     *         (exists or other errors)
+     */
+    public User userSignup(User user) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public boolean promoteUser(User user) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public List<Book> bookSearch(Book book) {
+        return null;
+    }
 
-	
-	/*
-	 * Controller to View part
-	 */
-	public void viewUserLogin(){
-		
-	}
-	public void viewUserSignup(){
-		
-	}
-	public void viewAddBook(){
-		
-	}
-	public void viewModifyBook(){
-		
-	}
-	public void viewOrders(){
-		
-	}
-	public void viewPlaceOrder(){
-		
-	}
-	public void viewConfirmOrder(){
-		
-	}
+    public boolean addBook(Book book) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean updateBook(Book book) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean placeOrder(Order order) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean confirmOrder(Order order) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean addToCart(Book book) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean checkOutCart(Cart cart) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public boolean promoteUser(User user) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /*
+     * Controller to View part
+     */
+    public void viewUserLogin() {
+        try {
+            mainWindow.switchToLogin();
+            this.currUser = null;
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void viewUserSignup() {
+        try {
+            mainWindow.switchToSignUp();
+            this.currUser = null;
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void viewUserDashBoard() {
+        if (this.currUser != null)
+            viewUserDashBoard(currUser);
+    }
+
+    public void viewUserDashBoard(User user) {
+        try {
+            mainWindow.switchToMain(user);
+            this.currUser = user;
+            udController.setUser(user);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void viewOrders() {
+        // TODO
+    }
+
+    public void viewConfirmOrder() {
+        // TODO
+    }
+
 }

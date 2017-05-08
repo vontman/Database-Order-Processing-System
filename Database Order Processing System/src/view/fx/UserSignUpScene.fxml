@@ -7,11 +7,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<VBox alignment="CENTER_LEFT" prefHeight="600.0" prefWidth="400.0" spacing="15.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<VBox alignment="CENTER_LEFT" prefHeight="600.0" prefWidth="400.0" spacing="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.SignUpSceneController">
   <children>
+    <Label prefHeight="46.0" prefWidth="300.0" text="Error" textFill="RED" />
     <VBox>
       <children>
-        <Label text="User Name:" textAlignment="LEFT">
+        <Label text="User Name*:" textAlignment="LEFT">
           <labelFor>
             <TextField fx:id="userNameTF" prefWidth="200.0" promptText="username" />
           </labelFor>
@@ -21,7 +22,7 @@
     </VBox>
     <VBox>
       <children>
-        <Label text="Password:" textAlignment="LEFT">
+        <Label text="Password*:" textAlignment="LEFT">
           <labelFor>
             <TextField id="userNameTF" fx:id="passwordTF" prefWidth="200.0" promptText="username" />
           </labelFor>
@@ -31,12 +32,12 @@
     </VBox>
     <VBox>
       <children>
-        <Label text="Email:" textAlignment="LEFT">
+        <Label text="Email*:" textAlignment="LEFT">
           <labelFor>
-            <TextField id="userNameTF" fx:id="x1" prefWidth="200.0" promptText="email" />
+            <TextField id="userNameTF" fx:id="emailTF" prefWidth="200.0" promptText="email" />
           </labelFor>
         </Label>
-        <fx:reference source="x1" />
+        <fx:reference source="emailTF" />
       </children>
     </VBox>
     <HBox alignment="CENTER" spacing="20.0">
@@ -45,32 +46,32 @@
           <children>
             <Label text="First Name:" textAlignment="LEFT">
               <labelFor>
-                <TextField id="userNameTF" fx:id="x2" prefWidth="200.0" promptText="first name" />
+                <TextField id="userNameTF" fx:id="firstNameTF" prefWidth="200.0" promptText="first name" />
               </labelFor>
             </Label>
-            <fx:reference source="x2" />
+            <fx:reference source="firstNameTF" />
           </children>
         </VBox>
         <VBox>
           <children>
             <Label text="Last Name:" textAlignment="LEFT">
               <labelFor>
-                <TextField id="userNameTF" fx:id="x3" prefWidth="200.0" promptText="last name" />
+                <TextField id="userNameTF" fx:id="lastNameTF" prefWidth="200.0" promptText="last name" />
               </labelFor>
             </Label>
-            <fx:reference source="x3" />
+            <fx:reference source="lastNameTF" />
           </children>
         </VBox>
       </children>
     </HBox>
     <VBox>
       <children>
-        <Label text="Telephone Number:" textAlignment="LEFT">
+        <Label text="Phone Number:" textAlignment="LEFT">
           <labelFor>
-            <TextField id="userNameTF" fx:id="x4" prefWidth="200.0" promptText="phone number" />
+            <TextField id="userNameTF" fx:id="phoneTF" prefWidth="200.0" promptText="phone number" />
           </labelFor>
         </Label>
-        <fx:reference source="x4" />
+        <fx:reference source="phoneTF" />
       </children>
     </VBox>
     <VBox>
@@ -80,18 +81,19 @@
             <TextField id="userNameTF" prefWidth="200.0" promptText="username" />
           </labelFor>
         </Label>
-        <TextArea prefHeight="59.0" prefWidth="286.0" promptText="address" wrapText="true" />
+        <TextArea fx:id="addressTA" prefHeight="59.0" prefWidth="286.0" promptText="address" wrapText="true" />
       </children>
     </VBox>
     <VBox alignment="CENTER" fillWidth="true" spacing="10.0">
       <children>
-        <Button id="logInBtn" defaultButton="true" mnemonicParsing="false" prefWidth="150.0" text="Sign up" />
+        <Button id="logInBtn" fx:id="signUpBtn" defaultButton="true" mnemonicParsing="false" prefWidth="150.0" text="Sign up" />
         <Label text="Or" />
-        <Button id="logInBtn" defaultButton="false" minWidth="-1.0" mnemonicParsing="false" prefWidth="150.0" text="Log in" textOverrun="CLIP" />
+        <Button id="logInBtn" fx:id="loginBtn" defaultButton="false" minWidth="-1.0" mnemonicParsing="false" prefWidth="150.0" text="Log in" textOverrun="CLIP" />
       </children>
     </VBox>
+    <Label prefHeight="46.0" prefWidth="300.0" text="*Required" textFill="RED" />
   </children>
   <padding>
-    <Insets bottom="100.0" left="50.0" right="50.0" top="50.0" />
+    <Insets bottom="30.0" left="50.0" right="50.0" top="20.0" />
   </padding>
 </VBox>
