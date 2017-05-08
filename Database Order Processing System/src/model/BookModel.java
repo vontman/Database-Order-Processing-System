@@ -61,22 +61,6 @@ public class BookModel {
 		return true;
 	}
 	
-	public static boolean checkCreditCard (String number, int price) throws SQLException {
-		List<String> cols = new ArrayList<String>();
-		List<String> vals = new ArrayList<String>();
-		cols.add("Number");
-		vals.add(number);
-		ResultSet hamada = model.select("creditCard", cols, vals);
-		String string = hamada.getString("ExpirationDate");
-		int balance = Integer.parseInt(hamada.getString("Balance"));
-		if (balance < price) {
-			return false;
-		}
-		string = new SimpleDateFormat("yyyy-MM-dd").format(string);
-		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-		return string.compareTo(date) >= 0;
-	}
-	
 	public static boolean updateBook(Book book, String isbn) throws SQLException {
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
