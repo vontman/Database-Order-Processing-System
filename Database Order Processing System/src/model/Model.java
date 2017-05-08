@@ -20,6 +20,17 @@ public class Model {
 	private Model() {
 		connect(url, user, pass);
 	}
+	public void setAutoCommit(boolean val) throws SQLException{
+		connection.setAutoCommit(val);
+	}
+	public void commit() throws SQLException{
+		try{
+			connection.commit();
+		}catch(SQLException e){
+			connection.rollback();
+			throw e;
+		}
+	}
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
