@@ -18,10 +18,22 @@ public class User extends Properties{
 	public String getLastName(){
 		return getProperty("lastname");
 	}
+	public String getEmail(){
+		return getProperty("email");
+	}
+	public String getPhone(){
+		return getProperty("phone");
+	}
+	public String getAddress(){
+		return getProperty("address");
+	}
+	public String getCreated(){
+		return getProperty("created");
+	}
 	public Cart getCart(){
 		return null;
 	}
-	public boolean isManager(){
-		return Boolean.parseBoolean(getProperty("manager"));
+	public int isManager(){
+		return Integer.parseInt(getProperty("manager"));
 	}
 }

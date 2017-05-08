@@ -40,43 +40,138 @@ public class BookModel {
       
       Purchaces:
       DONE : checkout
+      TODO : get
       
       Credit Card:
       DONE : check card validity
       
       
+      TESTING
+      DONE : add order
+      DONE : view orders
+      DONE : delete orders
+      
+      BOOK:
+      DONE : add book	
+      DONE : update book
+      DONE : search books
+      DONE : delete book
+      DONE : get category
+      
+      AUTHORS:
+      DONE : get by isbn
+      DONE : add new authors
+      DONE : get book from author
+      DONE :  delete authors
+ 
+      Purchaces:
+      DONE : checkout
       
   */
 	private static Model model = Model.instance;
+	
 	public static boolean createBook(Book book) throws SQLException {
+		try{
+
+			model.setAutoCommit(false);
+			List<String>cols = new ArrayList<String>();
+			List<String>vals= new ArrayList<String>();
+			cols.add("isbn");
+			vals.add(book.getIsbn());
+			cols.add("title");
+			vals.add(book.getTitle());
+			cols.add("copies");
+			vals.add("" + book.getCopies());	
+			cols.add("publication_year");
+			vals.add(book.getPublishYear());
+			cols.add("category_id");
+			vals.add("" + book.getCategoryId());
+			cols.add("publisher_name");
+			vals.add(book.getPublisher());
+			cols.add("threshold");
+			vals.add("" + book.getThreshold());
+			cols.add("price");
+			vals.add("" + book.getPrice());
+			model.insert("BOOK", cols, vals);
+			for (String author : book.getAuthors()) {
+				addAuthorRelation(book.getIsbn(), author);
+			}
+			model.commit();
+			System.out.println("Book added successfully.");
+		}catch(Exception e){
+			model.rollBack();
+			throw e;
+		}finally{
+			model.setAutoCommit(true);
+		}
+		return true;
+	}	
+	public static void addAuthorRelation (String book_isbn, String authors_name) throws SQLException{
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
-		cols.add("isbn");
-		vals.add(book.getIsbn());
+		cols.add("book_isbn");
+		vals.add(book_isbn);
+		cols.add("authors_name");
+		vals.add(authors_name);
+		model.insert("BOOK_HAS_AUTHORS", cols, vals);
+	}
+	public static boolean addAuthor(String authorName) throws SQLException{
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("name");
+		vals.add(authorName);
+		
+		model.insert("AUTHORS", cols, vals);
+		System.out.println("Author added successfully.");
+		return true;
+	}
+	public static boolean addOrder(Order order) throws SQLException{
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("book_isbn");
+		vals.add(order.getBookIsbn());
+		cols.add("copies");
+		vals.add(""+order.getOrderedCopies());
 		cols.add("created");
 		vals.add(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 		
-		model.insert("BOOK", cols, vals);
-		System.out.println("Book added successfully.");
-		return true;
-	}	
-	public static boolean updateBook(Book book, String isbn) throws SQLException {
-		List<String>cols = new ArrayList<String>();
-		List<String>vals= new ArrayList<String>();
-		cols.add("isbn");
-		vals.add(book.getIsbn());
-		cols.add("title");
-		cols.add("price");
-		cols.add("copies");
-		cols.add("publication_year");
-		cols.add("category_id");
-		cols.add("publisher_name");
-		cols.add("threshold");
-		
-		model.update("BOOK", cols, vals, "isbn", isbn);
-		System.out.println("Book updated successfully.");
+		model.insert("ORDERS", cols, vals);
+		System.out.println("Order added successfully.");
 		return true;
 	}
+	private static boolean addPurchases(List<String>bookIsbn, List<Integer>copies, String username) throws SQLException{
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("username");
+		vals.add(username);
+		String id = null;
+		ResultSet rs = model.insert("Purchases", cols, vals);
+		if(rs.next()){
+			id = ""+rs.getInt(1);
+		}else{
+			return false;
+		}
+		for(int i = 0  ; i < bookIsbn.size() ; i ++){
+			addPurchaseMini(id, bookIsbn.get(i), copies.get(i));
+		}
+		return true;
+	}
+	private static boolean addPurchaseMini(String purchaceId, String isbn, int copies)throws SQLException{
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		
+		cols.add("ISBN");
+		vals.add(isbn);
+		cols.add("Purchases_ID");
+		vals.add(purchaceId);
+		cols.add("Quantity");
+		vals.add(""+copies);
+		
+		model.insert("BOOK_HAS_PURCHASES", cols, vals);
+		return true;
+	}
+
+	
 	public static Book getBook(String isbn) throws SQLException {
 
 		List<String>cols = new ArrayList<String>();
@@ -94,7 +189,7 @@ public class BookModel {
 			book.setProperty("publication_year", result.getString("publication_year"));	
 			book.setProperty("category_id", result.getString("category_id"));	
 			book.setProperty("publisher_name", result.getString("publisher_name"));	
-			book.setProperty("threshold", result.getString("threshold"));
+			book.setProperty("threshold", ""+result.getInt("threshold"));
 		}else{
 			System.out.println("Book not found");
 			return null;
@@ -104,37 +199,6 @@ public class BookModel {
 		return book;
 		
 	}
-	
-	public static String getAuthors(String isbn) throws SQLException {
-
-		List<String>cols = new ArrayList<String>();
-		List<String>vals= new ArrayList<String>();
-		StringBuilder builder = new StringBuilder();
-		cols.add("BOOK_ISBN");
-		vals.add(isbn);
-		
-		ResultSet result = model.select("BOOK_HAS_AUTHORS ", cols, vals);
-		while(result.next()){
-			if(builder.length() > 0)
-				builder.append(",");
-			builder.append(result.getString("authors_name"));
-		}
-		return builder.toString();
-	}	
-	public static String getCategory(int id) throws SQLException {
-
-		List<String>cols = new ArrayList<String>();
-		List<String>vals= new ArrayList<String>();
-		cols.add("id");
-		vals.add(""+id);
-		
-		ResultSet result = model.select("category", cols, vals);
-		if(result.next()){
-			return result.getString("type");
-		}
-		return null;
-	}
-	
 	public static List<Book> getBooks(List<String> cols, List<String> vals, String category, String author) throws SQLException {
         String condition = "";
         String cmnd = "SELECT * FROM BOOK ";
@@ -174,7 +238,7 @@ public class BookModel {
 			book.setProperty("publication_year", result.getString("publication_year"));	
 			book.setProperty("category_id", result.getString("category_id"));	
 			book.setProperty("publisher_name", result.getString("publisher_name"));	
-			book.setProperty("threshold", result.getString("threshold"));
+			book.setProperty("threshold", ""+result.getInt("threshold"));
         	ret.add(book);
 		}
        	for(Book book :ret){
@@ -183,21 +247,35 @@ public class BookModel {
        	}
       	return ret;
 	}
-    public static boolean addOrder(Order order) throws SQLException{
+    public static String getAuthors(String isbn) throws SQLException {
+
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
-		cols.add("book_isbn");
-		vals.add(order.getBookIsbn());
-		cols.add("copies");
-		vals.add(""+order.getOrderedCopies());
-		cols.add("created");
-		vals.add(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		StringBuilder builder = new StringBuilder();
+		cols.add("BOOK_ISBN");
+		vals.add(isbn);
 		
-		model.insert("ORDERS", cols, vals);
-		System.out.println("Order added successfully.");
-		return true;
-	}
+		ResultSet result = model.select("BOOK_HAS_AUTHORS ", cols, vals);
+		while(result.next()){
+			if(builder.length() > 0)
+				builder.append(",");
+			builder.append(result.getString("authors_name"));
+		}
+		return builder.toString();
+	}	
+	public static String getCategory(int id) throws SQLException {
 
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("id");
+		vals.add(""+id);
+		
+		ResultSet result = model.select("category", cols, vals);
+		if(result.next()){
+			return result.getString("type");
+		}
+		return null;
+	}
 	public static List<Order> getOrders() throws SQLException{
 
 		List<String>cols = new ArrayList<String>();
@@ -213,6 +291,32 @@ public class BookModel {
 		}
 		return orders;
 	}
+	
+	public static boolean updateBook(Book book, String isbn) throws SQLException {
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("isbn");
+		vals.add(book.getIsbn());
+		cols.add("title");
+		vals.add(book.getTitle());
+		cols.add("copies");
+		vals.add("" + book.getCopies());	
+		cols.add("publication_year");
+		vals.add(book.getPublishYear());
+		cols.add("category_id");
+		vals.add("" + book.getCategoryId());
+		cols.add("publisher_name");
+		vals.add(book.getPublisher());
+		cols.add("threshold");
+		vals.add("" + book.getThreshold());
+		cols.add("price");
+		vals.add("" + book.getPrice());
+		
+		model.update("BOOK", cols, vals, "isbn", isbn);
+		System.out.println("Book updated successfully.");
+		return true;
+	}
+	
 	public static boolean removeOrder(String book_isbn) throws SQLException{
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
@@ -222,8 +326,7 @@ public class BookModel {
 		model.delete("ORDERS", cols, vals);
 		System.out.println("Order deleted successfully.");
 		return true;
-	}
-      
+	}  
 	public static boolean removeBook(String book_isbn) throws SQLException{
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
@@ -234,18 +337,6 @@ public class BookModel {
 		System.out.println("Order deleted successfully.");
 		return true;
 	}
-      
-	public static boolean addAuthor(String authorName) throws SQLException{
-		List<String>cols = new ArrayList<String>();
-		List<String>vals= new ArrayList<String>();
-		cols.add("name");
-		vals.add(authorName);
-		
-		model.insert("AUTHORS", cols, vals);
-		System.out.println("Author added successfully.");
-		return true;
-	}
-      
 	public static boolean removeAuthor(String name) throws SQLException{
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
@@ -256,19 +347,23 @@ public class BookModel {
 		System.out.println("Author deleted successfully.");
 		return true;
 	}
-	public static boolean checkOut(List<String>bookIsbn, List<Integer>copies, String username, String cardNum, int totPrice) throws SQLException{
+	
+	public static boolean checkOut(List<String>bookIsbn, List<Integer>copies, String username, String cardNum) throws SQLException{
 		try{
+			int totPrice= 0;
 			model.setAutoCommit(false);
-			int balance = UserModel.checkCreditCard(cardNum, totPrice, username);
-			UserModel.updateCreditCard(cardNum, balance-totPrice);
-			addPurchases(bookIsbn, copies, username);
 			for(int i = 0 ;  i < bookIsbn.size() ; i ++){
 				Book book = getBook(bookIsbn.get(i));
+				totPrice += book.getPrice()*copies.get(i);
 				book.setProperty("copies", ""+(book.getCopies()-copies.get(i)));
 				updateBook(book, bookIsbn.get(i));
 			}
+			int balance = UserModel.checkCreditCard(cardNum, totPrice, username);
+			UserModel.updateCreditCard(cardNum, balance-totPrice);
+			addPurchases(bookIsbn, copies, username);
 			model.commit();
 		}catch(Exception e){
+			model.rollBack();
 			throw e;
 		}finally{
 			model.setAutoCommit(true);
@@ -276,36 +371,5 @@ public class BookModel {
 		
 		return true;
 	}
-	private static boolean addPurchases(List<String>bookIsbn, List<Integer>copies, String username) throws SQLException{
-		List<String>cols = new ArrayList<String>();
-		List<String>vals= new ArrayList<String>();
-		cols.add("username");
-		vals.add(username);
-		String id = null;
-		ResultSet rs = model.insert("Purchases", cols, vals);
-		if(rs.next()){
-			id = rs.getString("ID");
-		}else{
-			return false;
-		}
-		for(int i = 0  ; i < bookIsbn.size() ; i ++){
-			addPurchaseMini(id, bookIsbn.get(i), copies.get(i));
-		}
-		return true;
-	}
-	private static boolean addPurchaseMini(String purchaceId, String isbn, int copies)throws SQLException{
-		List<String>cols = new ArrayList<String>();
-		List<String>vals= new ArrayList<String>();
-		
-		cols.add("ISBN");
-		cols.add(isbn);
-		cols.add("Purchases_ID");
-		vals.add(purchaceId);
-		cols.add("Quantity");
-		vals.add(""+copies);
-		
-		model.insert("BOOK_HAS_PURCHASES", cols, vals);
-		return true;
-	}
-      
+	
 }

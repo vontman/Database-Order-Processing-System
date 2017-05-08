@@ -24,12 +24,10 @@ public class Model {
 		connection.setAutoCommit(val);
 	}
 	public void commit() throws SQLException{
-		try{
-			connection.commit();
-		}catch(SQLException e){
-			connection.rollback();
-			throw e;
-		}
+		connection.commit();
+	}
+	public void rollBack() throws SQLException{
+		connection.rollback();
 	}
 	@Override
 	protected void finalize() throws Throwable {
@@ -72,7 +70,7 @@ public class Model {
 			throw new RuntimeException("Invalid call with incompatable cols and vals.");
 		String stmnt = "INSERT INTO "+tableName+
 				" ("+String.join(",", cols)
-				+") VALUES ('"+String.join("',''", vals)+"');";
+				+") VALUES ('"+String.join("','", vals)+"');";
 		return executeUpdate(stmnt);
 	}
 	public void delete(String tableName, List<String>cols, List<String>vals) throws SQLException{
