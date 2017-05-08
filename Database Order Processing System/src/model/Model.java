@@ -10,7 +10,7 @@ import java.util.List;
 public class Model {
 	public static Model instance = new Model();
 
-	private static final String url = "localhost";
+	private static final String url = "jdbc:mysql://localhost:3306/Book_Order";
 	private static final String user = "root";
 	private static final String pass = "";
 	
@@ -28,11 +28,14 @@ public class Model {
 	}
 	private boolean connect(String url, String user, String pass){
 		try {
+
+		     Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(url, user, pass);
 			statement = connection.createStatement();
 			error = null;
 			return true;
-		} catch (SQLException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			error = e.getMessage();
 			return false;
 		}

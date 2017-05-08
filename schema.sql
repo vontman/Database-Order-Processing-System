@@ -54,20 +54,21 @@ CREATE TABLE IF NOT EXISTS `Book_Order`.`Book` (
   `Copies` INT UNSIGNED NOT NULL,
   `Publication_Year` DATE NOT NULL,
   `Category_ID` INT NULL,
-  `Name` VARCHAR(45) NOT NULL,
+  `Publisher_name` VARCHAR(45) NOT NULL,
   `Threshold` INT ZEROFILL NOT NULL,
   `Price` INT UNSIGNED NOT NULL,
+    
   PRIMARY KEY (`ISBN`),
   UNIQUE INDEX `title_UNIQUE` (`title` ASC),
   INDEX `fk_Book_Category1_idx` (`Category_ID` ASC),
-  INDEX `fk_Book_Publisher1_idx` (`Name` ASC),
+  INDEX `fk_Book_Publisher1_idx` (`publisher_name` ASC),
   CONSTRAINT `fk_Book_Category1`
     FOREIGN KEY (`Category_ID`)
     REFERENCES `Book_Order`.`Category` (`ID`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Book_Publisher1`
-    FOREIGN KEY (`Name`)
+    FOREIGN KEY (`Publisher_name`)
     REFERENCES `Book_Order`.`Publisher` (`Name`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
