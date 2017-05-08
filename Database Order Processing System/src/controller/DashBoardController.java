@@ -1,9 +1,15 @@
 package controller;
 
-import data.User;
-
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import controller.Validator.ValidationException;
+import data.Book;
+import data.BookFactory;
+import data.User;
+import data.UserFactory;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -25,7 +31,7 @@ public class DashBoardController {
     private Button addBkBtn;
 
     @FXML
-    private TextArea addressTF;
+    private TextArea addressTA;
 
     @FXML
     private Button checkoutBtn;
@@ -129,7 +135,7 @@ public class DashBoardController {
     @FXML
     void initialize() {
         assert addBkBtn != null : "fx:id=\"addBkBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert addressTF != null : "fx:id=\"addressTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
+        assert addressTA != null : "fx:id=\"addressTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert checkoutBtn != null : "fx:id=\"checkoutBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert emailTF != null : "fx:id=\"emailTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert firstNameTF != null : "fx:id=\"firstNameTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
@@ -164,9 +170,11 @@ public class DashBoardController {
         assert userNameLbl != null : "fx:id=\"userNameTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert userSaveBtn != null : "fx:id=\"userSaveBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
 
+        ctrl = Controller.getInstance();
     }
 
     private User currUser;
+    private Controller ctrl;
 
     public void setUser(User user) {
         this.currUser = user;
@@ -182,11 +190,128 @@ public class DashBoardController {
                 .setText(user.getLastName() == null ? "" : user.getLastName());
         lastNameTF
                 .setText(user.getLastName() == null ? "" : user.getLastName());
-        addressTF.setText(user.getProperty("address") == null ? ""
+        addressTA.setText(user.getProperty("address") == null ? ""
                 : user.getProperty("address"));
 
-        mngrPanel.setExpanded(user.isManager()==1);
-        mngrPanel.setVisible(user.isManager()==1);
+        setManagerView(user.isManager() == 1);
     }
 
+    public void setManagerView(boolean isManager) {
+        mngrPanel.setExpanded(isManager);
+        mngrPanel.setVisible(isManager);
+
+        // TODO remove copies, threshold ... from table
+        // TODO make table editable for update
+    }
+
+    public void showBooks(List<Book> books) {
+        // TODO show list of book inside table view
+    }
+
+    @FXML
+    protected void handleLogOutAction(ActionEvent e) {
+        this.ctrl.viewUserLogin();
+    }
+
+    @FXML
+    protected void handleSaveUserAction(ActionEvent e) {
+        try {
+            UserFactory userFactroy = new UserFactory();
+            userFactroy.setUserName(currUser.getUserName());
+            userFactroy.setPassword(passwordPF.getText());
+            userFactroy.setEmail(emailTF.getText());
+            userFactroy.setPhone(phoneTF.getText());
+            userFactroy.setFirstName(firstNameTF.getText());
+            userFactroy.setLastName(lastNameTF.getText());
+            userFactroy.setAddress(addressTA.getText());
+
+            User newUser = userFactroy.getUser();
+            Validator.validateUserName(newUser.getUserName());
+            Validator.validatePassword(newUser.getPassword());
+            Validator.validateEmail(newUser.getProperty("email"));
+            if (!newUser.getProperty("phone").isEmpty())
+                Validator.validatePhone(newUser.getProperty("phone"));
+
+            newUser = this.ctrl.updateUser(newUser);
+            this.currUser = newUser;
+        } catch (ValidationException ex) {
+            ctrl.showErrorDialogue("Error", ex.getMessage());
+        }
+    }
+
+    @FXML
+    protected void handleBkSearchBtnAction(ActionEvent e) {
+        BookFactory bkFactory = new BookFactory();
+        bkFactory.setIsbn(srchBkISBNTF.getText());
+        bkFactory.setTitle(srchBkISBNTF.getText());
+        bkFactory.setAuthors(srchBkAuthorTF.getText());
+        System.out.println(srchBkCategoryCB.getValue().toString());
+        bkFactory.setCategory(srchBkCategoryCB.getValue().toString());
+        bkFactory.setPublisher(srchBkPublisherTF.getText());
+        bkFactory.setPublishYear(srchBkPublicationYearTF.getText());
+
+        showBooks(this.ctrl.bookSearch(bkFactory.getBook()));
+    }
+
+    @FXML
+    protected void handleShowCartBtnAction(ActionEvent e) {
+        ctrl.viewCart();
+    }
+
+    @FXML
+    protected void handleCheckoutBtnAction(ActionEvent e) {
+        try {
+            ctrl.checkOutCart();
+            // TODO success
+        } catch (Exception ex) {
+            // TODO failure
+            ctrl.showErrorDialogue("Error", ex.getMessage());
+        }
+    }
+
+    @FXML
+    protected void handlePromotUserBtnAction(ActionEvent e) {
+        try {
+            ctrl.promoteUser(promotUserNameTF.getText());
+        } catch (Exception ex) {
+            ctrl.showErrorDialogue(ex.getMessage());
+        }
+    }
+
+    @FXML
+    protected void handleOrdersBtnAction(ActionEvent e) {
+        try {
+            ctrl.viewOrders();
+        } catch (Exception ex) {
+            ctrl.showErrorDialogue(ex.getMessage());
+        }
+    }
+
+    @FXML
+    protected void handleGenerateReportsBtnAction(ActionEvent e) {
+        try {
+            ctrl.viewOrders();
+        } catch (Exception ex) {
+            ctrl.showErrorDialogue(ex.getMessage());
+        }
+    }
+
+    @FXML
+    protected void handleAddBkBtnAction(ActionEvent e) {
+        try {
+            BookFactory bkFactory = new BookFactory();
+            bkFactory.setTitle(newBkTitleTF.getText());
+            bkFactory.setAuthors(newBkAuthorTF.getText());
+            bkFactory.setCategory(newBkCategoryTF.getText());
+            bkFactory.setPublisher(newBkPublisherTF.getText());
+            bkFactory.setPublishYear(newBkPublicationYearTF.getText());
+            bkFactory.setIsbn(newBkISBNTF.getText());
+            bkFactory.setPrice(newBkPriceTF.getText());
+            bkFactory.setCopies(newBkCopiesTF.getText());
+            
+            ctrl.addBook(bkFactory.getBook());
+        } catch (Exception ex) {
+            ctrl.showErrorDialogue(ex.getMessage());
+        }
+    }
 }

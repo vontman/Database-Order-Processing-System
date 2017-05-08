@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import data.Book;
@@ -12,6 +13,7 @@ public class Controller {
 
     private User dummyUser, dummyMngr;
     private User currUser;
+    private Cart currCart;
 
     private Main mainWindow;
     private DashBoardController udController;
@@ -42,10 +44,14 @@ public class Controller {
         this.udController = udController;
     }
 
+    public Cart getCart() {
+        return this.currCart;
+    }
+
     /**
      * @return User instance if exists or null if not exists
      */
-    public User userLogin(String userName, String password) {
+    public User userLogin(String userName, String password) throws Exception {
         if (userName.equals(dummyUser.getUserName())
                 && password.equals(dummyUser.getPassword()))
             return dummyUser;
@@ -59,47 +65,65 @@ public class Controller {
      * @return the new User instance if added successfully or null if not add
      *         (exists or other errors)
      */
-    public User userSignup(User user) {
+    public User userSignup(User user) throws Exception {
         return user;
     }
 
     public List<Book> bookSearch(Book book) {
-        return null;
+        // TODO use model to search the book and return list of results
+        return new LinkedList<Book>();
     }
 
-    public boolean addBook(Book book) {
+    public boolean addBook(Book book) throws Exception {
+        // TODO Auto-generated method stub
+        // don't forget to handle category number
+        return false;
+    }
+
+    public boolean updateBook(Book book) throws Exception {
+        // TODO Auto-generated method stub
+        // don't forget to handle category number
+        return false;
+    }
+
+    public boolean placeOrder(Order order) throws Exception {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public boolean updateBook(Book book) {
+    public boolean confirmOrder(Order order) throws Exception {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public boolean placeOrder(Order order) {
+    public boolean addToCart(Book book) throws Exception {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public boolean confirmOrder(Order order) {
+    /**
+     * @throws Exception
+     *             with error message to be shown in case of failure
+     */
+    public void checkOutCart() throws Exception {
         // TODO Auto-generated method stub
-        return false;
     }
 
-    public boolean addToCart(Book book) {
-        // TODO Auto-generated method stub
-        return false;
+    /**
+     * @throws Exception
+     *             with error message to be shown in case of failure
+     */
+    public void promoteUser(String userName) throws Exception {
+        // TODO
     }
 
-    public boolean checkOutCart(Cart cart) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public boolean promoteUser(User user) {
-        // TODO Auto-generated method stub
-        return false;
+    /**
+     * 
+     * */
+    public User updateUser(User user) throws RuntimeException {
+        // TODO Update user in model if updated successfully return the user
+        // object else throw exception with error message to display
+        return user;
     }
 
     /*
@@ -130,9 +154,10 @@ public class Controller {
 
     public void viewUserDashBoard(User user) {
         try {
-            if(user != null) {
+            if (user != null) {
                 mainWindow.switchToMain(user);
                 this.currUser = user;
+                this.currCart = new Cart();
                 udController.setUser(user);
             }
 
@@ -149,4 +174,15 @@ public class Controller {
         // TODO
     }
 
+    public void viewCart() {
+        // TODO
+    }
+
+    public void showErrorDialogue(String string, String message) {
+        // TODO Auto-generated method stub
+    }
+
+    public void showErrorDialogue(String message) {
+        showErrorDialogue("Error", message);
+    }
 }
