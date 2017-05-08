@@ -130,9 +130,11 @@ public class Controller {
 
     public void viewUserDashBoard(User user) {
         try {
-            mainWindow.switchToMain(user);
-            this.currUser = user;
-            udController.setUser(user);
+            if(user != null) {
+                mainWindow.switchToMain(user);
+                this.currUser = user;
+                udController.setUser(user);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
