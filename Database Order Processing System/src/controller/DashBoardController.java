@@ -4,20 +4,24 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import controller.Validator.ValidationException;
 import data.Book;
 import data.BookFactory;
 import data.User;
 import data.UserFactory;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import view.BookView;
 
 public class DashBoardController {
 
@@ -26,6 +30,15 @@ public class DashBoardController {
 
     @FXML
     private URL location;
+
+    @FXML
+    private TableView<BookView> bookTableView;
+    
+    @FXML
+    private TableColumn<BookView, String> titleCol, isbnCol, authorsCol, publisherCol, yearCol, categoryCol;
+    
+    @FXML
+    private TableColumn<BookView, Integer> priceCol;
 
     @FXML
     private Button addBkBtn;
@@ -175,6 +188,7 @@ public class DashBoardController {
 
     private User currUser;
     private Controller ctrl;
+    private ObservableList<BookView> books;
 
     public void setUser(User user) {
         this.currUser = user;
@@ -194,6 +208,14 @@ public class DashBoardController {
                 : user.getProperty("address"));
 
         setManagerView(user.isManager() == 1);
+        
+        titleCol.setCellValueFactory(cellData -> cellData.getValue().getTitleProb());
+        isbnCol.setCellValueFactory(cellData -> cellData.getValue().getIsbnProb());
+        authorsCol.setCellValueFactory(cellData -> cellData.getValue().getAuthorsProb());
+        publisherCol.setCellValueFactory(cellData -> cellData.getValue().getPublisherProb());
+        yearCol.setCellValueFactory(cellData -> cellData.getValue().getYearProb());
+        priceCol.setCellValueFactory(cellData -> cellData.getValue().getPriceProb());
+        bookTableView.setItems(books);
     }
 
     public void setManagerView(boolean isManager) {
@@ -234,7 +256,7 @@ public class DashBoardController {
 
             newUser = this.ctrl.updateUser(newUser);
             this.currUser = newUser;
-        } catch (ValidationException ex) {
+        } catch (Exception ex) {
             ctrl.showErrorDialogue("Error", ex.getMessage());
         }
     }
@@ -261,7 +283,8 @@ public class DashBoardController {
     @FXML
     protected void handleCheckoutBtnAction(ActionEvent e) {
         try {
-            ctrl.checkOutCart();
+            // TODO credit card
+            ctrl.checkOutCart("");
             // TODO success
         } catch (Exception ex) {
             // TODO failure
@@ -308,7 +331,7 @@ public class DashBoardController {
             bkFactory.setIsbn(newBkISBNTF.getText());
             bkFactory.setPrice(newBkPriceTF.getText());
             bkFactory.setCopies(newBkCopiesTF.getText());
-            
+
             ctrl.addBook(bkFactory.getBook());
         } catch (Exception ex) {
             ctrl.showErrorDialogue(ex.getMessage());

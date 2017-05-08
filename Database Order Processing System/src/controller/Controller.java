@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import data.Book;
-import data.Cart;
 import data.Category;
 import data.Order;
 import data.User;
@@ -78,35 +77,35 @@ public class Controller {
         return new LinkedList<Book>();
     }
     private boolean checkIfManager() throws SQLException{
-    	User user = UserModel.getUser(currUser.getUserName());
-    	return (user.isManager() == 1);
+        User user = UserModel.getUser(currUser.getUserName());
+        return (user.isManager() == 1);
     }
     public boolean addBook(Book book) throws Exception {
         // TODO Auto-generated method stub
         // don't forget to handle category number
-    	if(!checkIfManager())
-    		throw new SQLException("User doesn't have the required privileges.");
+        if(!checkIfManager())
+            throw new SQLException("User doesn't have the required privileges.");
         return BookModel.createBook(book);
     }
 
     public boolean updateBook(Book book, String oldBookIsbn) throws SQLException {
         // TODO Auto-generated method stub
         // don't forget to handle category number
-    	if(!checkIfManager())
-    		throw new SQLException("User doesn't have the required privileges.");
+        if(!checkIfManager())
+            throw new SQLException("User doesn't have the required privileges.");
         return BookModel.updateBook(book, oldBookIsbn);
     }
 
     public boolean placeOrder(Order order) throws SQLException {
         // TODO Auto-generated method stub
-    	if(!checkIfManager())
-    		throw new SQLException("User doesn't have the required privileges.");
+        if(!checkIfManager())
+            throw new SQLException("User doesn't have the required privileges.");
         return BookModel.addOrder(order);
     }
     public boolean confirmOrder(Order order) throws SQLException {
         // TODO Auto-generated method stub
-    	if(!checkIfManager())
-    		throw new SQLException("User doesn't have the required privileges.");
+        if(!checkIfManager())
+            throw new SQLException("User doesn't have the required privileges.");
         return BookModel.removeOrder(order.getBookIsbn());
     }
 
@@ -116,9 +115,9 @@ public class Controller {
         return true;
     }
 
-	public List<Category> getCategories() throws SQLException{
-		return BookModel.getCategories();
-	}
+    public List<Category> getCategories() throws SQLException{
+        return BookModel.getCategories();
+    }
 
     /**
      * @throws Exception
@@ -126,10 +125,10 @@ public class Controller {
      */
     public boolean checkOutCart(String cardNum) throws SQLException {
         // TODO Auto-generated method stub
-    	BookModel.checkOut(currBooks, currCopies, currUser.getUserName(), cardNum);
-    	currBooks.clear();
-    	currCopies.clear();
-    	return true;
+        BookModel.checkOut(currBooks, currCopies, currUser.getUserName(), cardNum);
+        currBooks.clear();
+        currCopies.clear();
+        return true;
     }
 
     /**
@@ -138,8 +137,8 @@ public class Controller {
      */
     public void promoteUser(String userName) throws SQLException {
         // TODO
-    	if(!checkIfManager())
-    		throw new SQLException("User doesn't have the required privileges.");
+        if(!checkIfManager())
+            throw new SQLException("User doesn't have the required privileges.");
         User user = UserModel.getUser(userName);
         user.setProperty("manager", "1");
         UserModel.updateUser(user, userName);
