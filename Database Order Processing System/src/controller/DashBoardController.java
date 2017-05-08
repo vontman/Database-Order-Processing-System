@@ -185,8 +185,8 @@ public class DashBoardController {
         addressTF.setText(user.getProperty("address") == null ? ""
                 : user.getProperty("address"));
 
-        mngrPanel.setExpanded(user.isManager());
-        mngrPanel.setVisible(user.isManager());
+        mngrPanel.setExpanded(user.isManager()==1);
+        mngrPanel.setVisible(user.isManager()==1);
     }
 
 }
