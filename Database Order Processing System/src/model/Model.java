@@ -53,7 +53,7 @@ public class Model {
 	}
 	public ResultSet executeUpdate(String command) throws SQLException{
 		System.out.println("Executing update command : "+command);
-		statement.executeUpdate(command);
+		statement.executeUpdate(command, statement.RETURN_GENERATED_KEYS);
 		return statement.getGeneratedKeys();
 	}
 	public ResultSet insert(String tableName, List<String>cols, List<String>vals) throws SQLException{
@@ -61,7 +61,7 @@ public class Model {
 			throw new RuntimeException("Invalid call with incompatable cols and vals.");
 		String stmnt = "INSERT INTO "+tableName+
 				" ("+String.join(",", cols)
-				+") VALUES ("+String.join(",", cols)+");";
+				+") VALUES ('"+String.join("',''", vals)+"');";
 		return executeUpdate(stmnt);
 	}
 	public void delete(String tableName, List<String>cols, List<String>vals) throws SQLException{

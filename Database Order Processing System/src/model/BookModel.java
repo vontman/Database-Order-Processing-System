@@ -22,6 +22,7 @@ public class BookModel {
       DONE : update book
       DONE : search books
       DONE : delete book
+      DONE : get category
       
       AUTHORS:
       DONE : get by isbn
@@ -60,6 +61,22 @@ public class BookModel {
 		return true;
 	}
 	
+	public static boolean checkCreditCard (String number, int price) throws SQLException {
+		List<String> cols = new ArrayList<String>();
+		List<String> vals = new ArrayList<String>();
+		cols.add("Number");
+		vals.add(number);
+		ResultSet hamada = model.select("creditCard", cols, vals);
+		String string = hamada.getString("ExpirationDate");
+		int balance = Integer.parseInt(hamada.getString("Balance"));
+		if (balance < price) {
+			return false;
+		}
+		string = new SimpleDateFormat("yyyy-MM-dd").format(string);
+		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		return string.compareTo(date) >= 0;
+	}
+	
 	public static boolean updateBook(Book book, String isbn) throws SQLException {
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
@@ -95,12 +112,13 @@ public class BookModel {
 			book.setProperty("category_id", result.getString("category_id"));	
 			book.setProperty("publisher_name", result.getString("publisher_name"));	
 			book.setProperty("threshold", result.getString("threshold"));
-			book.setProperty("authors", getAuthors(isbn));
-			return book;
 		}else{
 			System.out.println("Book not found");
 			return null;
 		}
+		book.setProperty("category", ""+getCategory(book.getCategoryId()));
+		book.setProperty("authors", getAuthors(isbn));
+		return book;
 		
 	}
 	
@@ -119,11 +137,27 @@ public class BookModel {
 			builder.append(result.getString("authors_name"));
 		}
 		return builder.toString();
+	}	
+	public static String getCategory(int id) throws SQLException {
+
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("id");
+		vals.add(""+id);
+		
+		ResultSet result = model.select("category", cols, vals);
+		if(result.next()){
+			return result.getString("type");
+		}
+		return null;
 	}
 	
 	public static List<Book> getBooks(List<String> cols, List<String> vals, String category, String author) throws SQLException {
         String condition = "";
         String cmnd = "SELECT * FROM BOOK ";
+        for(int i = 0 ; i < vals.size() ; i ++){
+        	vals.set(i, "'"+vals.get(i)+"'");
+        }
         if(author != null || category != null){
           cmnd += "JOIN"; 
         }
@@ -158,9 +192,12 @@ public class BookModel {
 			book.setProperty("category_id", result.getString("category_id"));	
 			book.setProperty("publisher_name", result.getString("publisher_name"));	
 			book.setProperty("threshold", result.getString("threshold"));
-			book.setProperty("authors", getAuthors(book.getIsbn()));
         	ret.add(book);
 		}
+       	for(Book book :ret){
+			book.setProperty("category", getCategory(book.getCategoryId()));
+			book.setProperty("authors", getAuthors(book.getIsbn()));
+       	}
       	return ret;
 	}
     public static boolean addOrder(Order order) throws SQLException{
@@ -236,38 +273,38 @@ public class BookModel {
 		System.out.println("Author deleted successfully.");
 		return true;
 	}
-	public static boolean addPurchace(List<String>bookIsbn, List<Integer>copies, String username) throws SQLException{
+	public static boolean addPurchase(List<String>bookIsbn, List<Integer>copies, String username) throws SQLException{
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
 		
 		cols.add("username");
 		vals.add(username);
 		String id = null;
-		ResultSet rs = model.insert("Purchaces", cols, vals);
+		ResultSet rs = model.insert("Purchases", cols, vals);
 		if(rs.next()){
 			id = rs.getString("ID");
 		}else{
 			return false;
 		}
 		for(int i = 0  ; i < bookIsbn.size() ; i ++){
-			addPurchaceMini(id, bookIsbn.get(i), copies.get(i));
+			addPurchaseMini(id, bookIsbn.get(i), copies.get(i));
 		}
 		
 		
 		return true;
 	}
-	private static boolean addPurchaceMini(String purchaceId, String isbn, int copies)throws SQLException{
+	private static boolean addPurchaseMini(String purchaceId, String isbn, int copies)throws SQLException{
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
 		
 		cols.add("ISBN");
 		cols.add(isbn);
-		cols.add("Purchaces_ID");
+		cols.add("Purchases_ID");
 		vals.add(purchaceId);
 		cols.add("Quantity");
 		vals.add(""+copies);
 		
-		model.insert("BOOK_HAS_PURCHACES", cols, vals);
+		model.insert("BOOK_HAS_PURCHASES", cols, vals);
 		return true;
 	}
       
