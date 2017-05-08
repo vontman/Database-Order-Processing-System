@@ -10,7 +10,10 @@ import model.BookModel;
 
 public class Controller implements ViewListener{
 
-	
+    private Controller() {}
+    
+    
+    
 	/*(non-Javadoc)
 	 * @see controller.ViewListener#userLogin(data.User)
 	 */
