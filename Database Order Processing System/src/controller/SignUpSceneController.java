@@ -87,12 +87,12 @@ public class SignUpSceneController {
             
             Validator.validateUserName(user.getUserName());
             Validator.validatePassword(user.getPassword());
-            Validator.validateEmail(user.getEmail());
-            if(!phone.isEmpty())
-                Validator.validatePhone(phone);
+            Validator.validateEmail(user.getProperty("email"));
+            if(!user.getProperty("phone").isEmpty())
+                Validator.validatePhone(user.getProperty("phone"));
 
             
-            User user = ctrl.userSignup();
+            user = ctrl.userSignup(user);
             if (user == null) {
                 errorMsgLbl.setText("This user name already exists!");
             } else {
@@ -108,7 +108,7 @@ public class SignUpSceneController {
         try {
             ctrl.viewUserLogin();
         } catch (Exception ex) {
-
+            
         }
     }
 }

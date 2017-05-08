@@ -9,7 +9,7 @@
 
 <VBox alignment="CENTER_LEFT" prefHeight="600.0" prefWidth="400.0" spacing="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.SignUpSceneController">
   <children>
-    <Label prefHeight="46.0" prefWidth="300.0" text="Error" textFill="RED" />
+    <Label fx:id="errorMsgLbl" prefHeight="46.0" prefWidth="300.0" text="Error" textFill="RED" />
     <VBox>
       <children>
         <Label text="User Name*:" textAlignment="LEFT">
@@ -86,9 +86,9 @@
     </VBox>
     <VBox alignment="CENTER" fillWidth="true" spacing="10.0">
       <children>
-        <Button id="logInBtn" fx:id="signUpBtn" defaultButton="true" mnemonicParsing="false" prefWidth="150.0" text="Sign up" />
+        <Button id="logInBtn" fx:id="signUpBtn" defaultButton="true" mnemonicParsing="false" onAction="#handleSignUpBtnAction" prefWidth="150.0" text="Sign up" />
         <Label text="Or" />
-        <Button id="logInBtn" fx:id="loginBtn" defaultButton="false" minWidth="-1.0" mnemonicParsing="false" prefWidth="150.0" text="Log in" textOverrun="CLIP" />
+        <Button id="logInBtn" fx:id="loginBtn" defaultButton="false" minWidth="-1.0" mnemonicParsing="false" onAction="#handleLogInBtnAction" prefWidth="150.0" text="Log in" textOverrun="CLIP" />
       </children>
     </VBox>
     <Label prefHeight="46.0" prefWidth="300.0" text="*Required" textFill="RED" />

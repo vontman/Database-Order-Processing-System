@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<BorderPane prefHeight="900.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+<BorderPane prefHeight="900.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.DashBoardController">
   <center>
     <SplitPane dividerPositions="0.24606299212598426" focusTraversable="true" prefHeight="160.0" prefWidth="200.0">
       <items>

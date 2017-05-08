@@ -60,8 +60,7 @@ public class Controller {
      *         (exists or other errors)
      */
     public User userSignup(User user) {
-        // TODO Auto-generated method stub
-        return null;
+        return user;
     }
 
     public List<Book> bookSearch(Book book) {
