@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import data.Book;
+import data.Category;
 import data.Order;
 
 public class BookModel {
@@ -263,7 +264,23 @@ public class BookModel {
 		}
 		return builder.toString();
 	}	
-	public static String getCategory(int id) throws SQLException {
+	
+    public static List<Category> getCategories() throws SQLException {
+
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		
+		ResultSet result = model.select("category", cols, vals);
+		List<Category>ret = new ArrayList<Category>();
+		while(result.next()){
+			Category category = new Category();
+			category.setProperty("type", result.getString("type"));
+			category.setProperty("id", result.getString("id"));
+			ret.add(category);
+		}
+		return ret;
+	}
+    public static String getCategory(int id) throws SQLException {
 
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
@@ -274,7 +291,7 @@ public class BookModel {
 		if(result.next()){
 			return result.getString("type");
 		}
-		return null;
+		throw new SQLException("Category not found.");
 	}
 	public static List<Order> getOrders() throws SQLException{
 
