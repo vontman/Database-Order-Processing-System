@@ -3,9 +3,7 @@ package data;
 import java.util.Properties;
 
 public class User extends Properties{
-	public User() {
-		
-	}
+
 	public String getUserName(){
 		return getProperty("username");
 	}
