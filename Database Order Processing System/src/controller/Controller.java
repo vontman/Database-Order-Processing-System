@@ -25,7 +25,7 @@ public class Controller {
         dummyMngr.setProperty("username", "m");
         dummyUser.setProperty("password", "123");
         dummyMngr.setProperty("password", "012");
-        dummyMngr.setProperty("manager", "true");
+        dummyMngr.setProperty("manager", "1");
     }
 
     private static Controller instance;

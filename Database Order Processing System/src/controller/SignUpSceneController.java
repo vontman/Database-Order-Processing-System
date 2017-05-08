@@ -3,7 +3,6 @@ package controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import controller.Validator.ValidationException;
 import data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -84,21 +83,20 @@ public class SignUpSceneController {
             user.setProperty("firstname", firstNameTF.getText());
             user.setProperty("lastname", lastNameTF.getText());
             user.setProperty("address", addressTA.getText());
-            
+
             Validator.validateUserName(user.getUserName());
             Validator.validatePassword(user.getPassword());
             Validator.validateEmail(user.getProperty("email"));
-            if(!user.getProperty("phone").isEmpty())
+            if (!user.getProperty("phone").isEmpty())
                 Validator.validatePhone(user.getProperty("phone"));
 
-            
             user = ctrl.userSignup(user);
             if (user == null) {
                 errorMsgLbl.setText("This user name already exists!");
             } else {
                 ctrl.viewUserDashBoard(user);
             }
-        } catch (ValidationException ex) {
+        } catch (Exception ex) {
             errorMsgLbl.setText(ex.getMessage());
         }
     }
@@ -108,7 +106,7 @@ public class SignUpSceneController {
         try {
             ctrl.viewUserLogin();
         } catch (Exception ex) {
-            
+
         }
     }
 }

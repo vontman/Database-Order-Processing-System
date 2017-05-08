@@ -2,7 +2,12 @@ package data;
 
 public class UserFactory {
     private User user = new User();
-
+    
+    public UserFactory() {
+        // default values
+        setIsManager(false);
+    }
+    
     public void setUserName(String val) {
         user.setProperty("username", val);
     }

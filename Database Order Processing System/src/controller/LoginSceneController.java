@@ -3,7 +3,6 @@ package controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import controller.Validator.ValidationException;
 import data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -68,7 +67,7 @@ public class LoginSceneController {
             } else {
                 ctrl.viewUserDashBoard(user);
             }
-        } catch (ValidationException ex) {
+        } catch (Exception ex) {
             errorMsgLbl.setText(ex.getMessage());
         }
     }
@@ -78,7 +77,7 @@ public class LoginSceneController {
         try {
             ctrl.viewUserSignup();
         } catch (Exception ex) {
-            
+
         }
     }
 
