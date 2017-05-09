@@ -9,4 +9,8 @@ public class Category extends Properties{
 	public String getType(){
 		return getProperty("type");
 	}
+	@Override
+	public String toString(){
+		return getType();
+	}
 }

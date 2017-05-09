@@ -2,8 +2,10 @@ package controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import data.Book;
 import data.Category;
@@ -72,9 +74,41 @@ public class Controller {
         UserModel.createUser(user);
         return user;
     }
-    public List<Book> bookSearch(Book book) {
+    public List<Book> bookSearch(Book book) throws SQLException {
         // TODO use model to search the book and return list of results
-        return new LinkedList<Book>();
+//        List<Book>ret = new LinkedList<Book>();
+//        book.setProperty("price", "100");
+//        book.setProperty("copies", "200");
+//        ret.add(book);
+//        return ret;
+    	System.out.println(book);
+    	List<String>keys = new ArrayList<String>();
+    	List<String>vals = new ArrayList<String>();
+    	String category = null;
+    	String author = null;
+
+    	if(book.getProperty("authors") != null)
+    		author = book.getProperty("authors");
+    	if(book.getProperty("category") != null)
+    		category = book.getProperty("category");
+    	if(book.getTitle() != null){
+    		keys.add("title");
+    		vals.add(book.getTitle());
+    	}
+    	if(book.getProperty("publisher_name") != null){
+    		keys.add("publisher_name");
+    		vals.add(book.getPublisher());
+    	}
+    	if(book.getProperty("isbn") != null){
+    		keys.add("isbn");
+    		vals.add(book.getIsbn());
+    	}
+    	if(book.getProperty("publication_year") != null){
+    		keys.add("publication_year");
+    		vals.add(book.getPublishYear());
+    	}
+    	return BookModel.getBooks(keys, vals, category, author);
+//    	return new ArrayList<Book>();
     }
     private boolean checkIfManager() throws SQLException{
         User user = UserModel.getUser(currUser.getUserName());
@@ -109,13 +143,19 @@ public class Controller {
         return BookModel.removeOrder(order.getBookIsbn());
     }
 
-    public boolean addToCart(Book book, int numberOfCopies) throws SQLException {
+    public boolean addToCart(Book book, int numberOfCopies){
         currBooks.add(book.getIsbn());
         currCopies.add(numberOfCopies);
         return true;
     }
 
     public List<Category> getCategories() throws SQLException{
+//    	List<Category>ret = new ArrayList<Category>();
+//    	Category c = new Category();
+//    	c.setProperty("id", "5");
+//    	c.setProperty("type", "lol");
+//    	ret.add(c);
+//    	return ret;
         return BookModel.getCategories();
     }
 
@@ -210,4 +250,5 @@ public class Controller {
     public void showErrorDialogue(String message) {
         showErrorDialogue("Error", message);
     }
+
 }
