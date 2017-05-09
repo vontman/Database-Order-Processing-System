@@ -33,7 +33,7 @@ public class Main extends Application {
                     .load(getClass().getResource("fx/UserLoginScene.fxml"));
             primaryStage.setScene(new Scene(root));
             primaryStage.setTitle("Book Shopping Login");
-        }
+        }	
     }
 
     public void switchToSignUp() throws Exception {

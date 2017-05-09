@@ -156,6 +156,9 @@ public class DashBoardController {
 
     @FXML
     private Button userSaveBtn;
+    
+    @FXML
+    private Button creditCardBtn;
 
 	private TextInputDialog dialog;
     
@@ -196,6 +199,7 @@ public class DashBoardController {
         assert srchBtn != null : "fx:id=\"srchBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert userNameLbl != null : "fx:id=\"userNameTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert userSaveBtn != null : "fx:id=\"userSaveBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
+        assert creditCardBtn != null : "fx:id=\"creditCardBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
 
         ctrl = Controller.getInstance();
         try {
@@ -276,18 +280,13 @@ public class DashBoardController {
                 public void handle(ActionEvent t) {
                 	Book book = books.get(getIndex());
 
-            		dialog = new TextInputDialog("0");
-                    dialog.setTitle("Order Book");
-                    dialog.setHeaderText("Enter order quantity");
-                    Optional<String> result = dialog.showAndWait();
-                    String entered = "0";
-                    if (result.isPresent()) {
-                        entered = result.get();
-                    }
+            		String entered = getInpFromUser("0", "Order book", "Enter order quantity");
                     try{
                     	int order = Integer.parseInt(entered);
                     	if(order > 0){
 	                    	ctrl.addToCart(book, order);
+	                    	priceTF.setText(""+ctrl.getCartTotPrice());
+	                    	itemsTF.setText(""+ctrl.getCartSize());
 	                    	new Alert(Alert.AlertType.INFORMATION, "Added to cart.").showAndWait();
                     	}
                     }catch(NumberFormatException e){
@@ -306,6 +305,17 @@ public class DashBoardController {
             }
         }
     }
+    private String getInpFromUser(String defaultString, String title, String text){
+    	dialog = new TextInputDialog(defaultString);
+        dialog.setTitle(title);
+        dialog.setHeaderText(text);
+        Optional<String> result = dialog.showAndWait();
+        String entered = "0";
+        if (result.isPresent()) {
+            entered = result.get();
+        }
+        return entered;
+    }
     public void setManagerView(boolean isManager) {
         mngrPanel.setExpanded(isManager);
         mngrPanel.setVisible(isManager);
@@ -321,7 +331,16 @@ public class DashBoardController {
         	this.books.add(bookView);
         }
     }
-
+    
+    @FXML
+    protected void handleShowCreditCardsAction(ActionEvent e){
+    	System.out.println("Show cards");
+    	try{
+    		
+    	}catch(Exception ex){
+    		new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+    	}
+    }
     @FXML
     protected void handleLogOutAction(ActionEvent e) {
         this.ctrl.viewUserLogin();
@@ -348,14 +367,14 @@ public class DashBoardController {
 
             newUser = this.ctrl.updateUser(newUser);
             this.currUser = newUser;
+            new Alert(Alert.AlertType.INFORMATION, "User created successfully.").showAndWait();
         } catch (Exception ex) {
-            ctrl.showErrorDialogue("Error", ex.getMessage());
+    		new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 
     @FXML
     protected void handleBkSearchBtnAction(ActionEvent e) {
-    	//TODO : add only valid vals
         BookFactory bkFactory = new BookFactory();
         bkFactory.setIsbn(srchBkISBNTF.getText());
         bkFactory.setTitle(srchBkTitleTF.getText());
@@ -381,45 +400,49 @@ public class DashBoardController {
 
     @FXML
     protected void handleCheckoutBtnAction(ActionEvent e) {
+    	System.out.println("checkout");
         try {
-            // TODO credit card
-            ctrl.checkOutCart("");
-            // TODO success
+            ctrl.checkOutCart(getInpFromUser("00000","Check Out", "Please enter the number of the credit card"));
+    		new Alert(Alert.AlertType.INFORMATION, "Checked out successfully.").showAndWait();
         } catch (Exception ex) {
-            // TODO failure
-            ctrl.showErrorDialogue("Error", ex.getMessage());
+    		new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 
     @FXML
     protected void handlePromotUserBtnAction(ActionEvent e) {
+    	System.out.println("promote");
         try {
             ctrl.promoteUser(promotUserNameTF.getText());
+    		new Alert(Alert.AlertType.INFORMATION, "User Promoted successfully").showAndWait();
         } catch (Exception ex) {
-            ctrl.showErrorDialogue(ex.getMessage());
+    		new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 
     @FXML
     protected void handleOrdersBtnAction(ActionEvent e) {
+    	System.out.println("handle orders");
         try {
             ctrl.viewOrders();
         } catch (Exception ex) {
-            ctrl.showErrorDialogue(ex.getMessage());
+    		new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 
     @FXML
     protected void handleGenerateReportsBtnAction(ActionEvent e) {
+    	System.out.println("Generate reports");
         try {
             ctrl.viewOrders();
         } catch (Exception ex) {
-            ctrl.showErrorDialogue(ex.getMessage());
+    		new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 
     @FXML
     protected void handleAddBkBtnAction(ActionEvent e) {
+    	System.out.println("add book");
         try {
             BookFactory bkFactory = new BookFactory();
             bkFactory.setTitle(newBkTitleTF.getText());
@@ -432,8 +455,9 @@ public class DashBoardController {
             bkFactory.setCopies(newBkCopiesTF.getText());
 
             ctrl.addBook(bkFactory.getBook());
-        } catch (Exception ex) {
-            ctrl.showErrorDialogue(ex.getMessage());
+    		new Alert(Alert.AlertType.INFORMATION, "Book added successfully").showAndWait();
+        } catch (SQLException ex) {
+    		new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 }
