@@ -324,7 +324,7 @@ public class DashBoardController {
     protected void handleShowCreditCardsAction(ActionEvent e) {
         System.out.println("Show cards");
         try {
-
+        	ctrl.viewCardScene();
         } catch (Exception ex) {
             new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
@@ -393,7 +393,9 @@ public class DashBoardController {
         System.out.println("checkout");
         try {
             ctrl.checkOutCart(getInpFromUser("00000", "Check Out",
-                    "Please enter the number of the credit card"));
+                    "Please enter the number of the credit card"),
+            		getInpFromUser("0000", "Check Out",
+                            "Please enter the pin of the credit card"));
             new Alert(Alert.AlertType.INFORMATION, "Checked out successfully.")
                     .showAndWait();
         } catch (Exception ex) {
@@ -428,7 +430,7 @@ public class DashBoardController {
     protected void handleGenerateReportsBtnAction(ActionEvent e) {
         System.out.println("Generate reports");
         try {
-            ctrl.viewOrders();
+            ctrl.showReports();
         } catch (Exception ex) {
             new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }

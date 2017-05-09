@@ -12,7 +12,7 @@ public class BookView {
     private StringProperty titleProb, isbnProb, authorsProb, publisherProb,
             yearProb, categoryProb;
     private IntegerProperty priceProb, copiesProb, thresholdProb,
-            categoryIDProb;
+            categoryIDProb, requestedProb;
 
     private String oldIsbn;
 
@@ -28,6 +28,7 @@ public class BookView {
         copiesProb = new SimpleIntegerProperty();
         thresholdProb = new SimpleIntegerProperty();
         categoryIDProb = new SimpleIntegerProperty();
+        requestedProb = new SimpleIntegerProperty(0);
 
         titleProb.set(book.getTitle());
         isbnProb.set(book.getIsbn());
@@ -150,5 +151,39 @@ public class BookView {
         bkFactory.setTitle(this.getTitleProb().getValue());
 
         return bkFactory.getBook();
+    }
+
+    public IntegerProperty getRequestedProb() {
+        return requestedProb;
+    }
+
+    public void setRequestedProb(IntegerProperty requestedProb) {
+        this.requestedProb = requestedProb;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((isbnProb == null) ? 0 : isbnProb.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        BookView other = (BookView) obj;
+        if (isbnProb == null) {
+            if (other.isbnProb != null)
+                return false;
+        } else if (!isbnProb.equals(other.isbnProb))
+            return false;
+        return true;
     }
 }

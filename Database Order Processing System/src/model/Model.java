@@ -60,11 +60,11 @@ public class Model {
 		return tmp;
 	}
 	public ResultSet executeCommand(String command) throws SQLException{
-		System.out.println("Executing command : "+command);
+//		System.out.println("ECxecuting command : "+command);
 		return statement.executeQuery(command);
 	}
 	public ResultSet executeUpdate(String command) throws SQLException{
-		System.out.println("Executing update command : "+command);
+//		System.out.println("Executing update command : "+command);
 		statement.executeUpdate(command, statement.RETURN_GENERATED_KEYS);
 		return statement.getGeneratedKeys();
 	}

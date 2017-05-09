@@ -9,9 +9,9 @@ import model.BookModel;
 public class Main {
 
 	public static void main(String[] args) throws SQLException {
-		System.out.println(BookModel.getBook("1"));
-		System.out.println(BookModel.getAuthors("1"));
-		System.out.println(BookModel.getBooks(new ArrayList<String>(), new ArrayList<String>(), null, null).size());
+//		System.out.println(BookModel.getBook("1"));
+//		System.out.println(BookModel.getAuthors("1"));
+//		System.out.println(BookModel.getBooks(new ArrayList<String>(), new ArrayList<String>(), null, null).size());
 //		System.out.println(BookModel.addAuthor("dont_hurt_me"));
 //		System.out.println(BookModel.removeAuthor("dont_hurt_me"));
 //		System.out.println(BookModel.removeBook("4"));
@@ -31,7 +31,7 @@ public class Main {
 //		System.out.println(UserModel.checkUser("zezo", "zezopasss"));
 //		System.out.println(UserModel.removeUser("zezo8"));
 		
-		User user = new User();
+//		User user = new User();
 //		user.setProperty("username", "hamadaIsLove");
 //		user.setProperty("firstname", "Hamada");
 //		user.setProperty("lastname", "Love");
@@ -59,7 +59,7 @@ public class Main {
 //		order.setProperty("book_isbn", "3");
 //		order.setProperty("copies", "7");
 //		System.out.println(BookModel.addOrder(order));
-		Book book = new Book();
+//		Book book = new Book();
 //		book.setProperty("authors", "hamada1,hamada2,hamada3");
 //		book.setProperty("isbn", "4");	
 //		book.setProperty("title", "how to love hamada");	
@@ -84,11 +84,11 @@ public class Main {
 		
 		
 		
-		List<String>books = new ArrayList<String>();
-		List<Integer>copies = new ArrayList<Integer>();
-		books.add("2");
-		copies.add(2);
-		System.out.println(BookModel.checkOut(books, copies, "zezo6", "7"));
+//		List<String>books = new ArrayList<String>();
+//		List<Integer>copies = new ArrayList<Integer>();
+//		books.add("2");
+//		copies.add(2);
+//		System.out.println(BookModel.checkOut(books, copies, "zezo6", "7"));
 	}
 
 	

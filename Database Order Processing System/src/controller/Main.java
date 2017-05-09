@@ -1,7 +1,5 @@
-package view;
+package controller;
 
-import controller.Controller;
-import controller.DashBoardController;
 import data.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +13,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    private Scene dashboardScene;
+    private Scene dashboardScene, cartScene;
 
     private Stage primaryStage;
 
@@ -30,16 +28,16 @@ public class Main extends Application {
     public void switchToLogin() throws Exception {
         if (primaryStage != null) {
             Parent root = FXMLLoader
-                    .load(getClass().getResource("fx/UserLoginScene.fxml"));
+                    .load(getClass().getResource("../view/fx/UserLoginScene.fxml"));
             primaryStage.setScene(new Scene(root));
             primaryStage.setTitle("Book Shopping Login");
-        }	
+        }
     }
 
     public void switchToSignUp() throws Exception {
         if (this.primaryStage != null) {
             Parent root = FXMLLoader
-                    .load(getClass().getResource("./fx/UserSignUpScene.fxml"));
+                    .load(getClass().getResource("../view/fx/UserSignUpScene.fxml"));
             primaryStage.setTitle("Book Shopping Sign up");
             primaryStage.setScene(new Scene(root));
         }
@@ -49,7 +47,7 @@ public class Main extends Application {
         if (this.primaryStage != null) {
             if (dashboardScene == null) {
                 FXMLLoader fxmlLoader = new FXMLLoader(
-                        getClass().getResource("fx/UserDashboardScene.fxml"));
+                        getClass().getResource("../view/fx/UserDashboardScene.fxml"));
                 Parent root = (Parent) fxmlLoader.load();
                 dashboardScene = new Scene(root);
                 DashBoardController udController = fxmlLoader
@@ -68,10 +66,43 @@ public class Main extends Application {
     public void switchToBookEdit() throws Exception {
         if (this.primaryStage != null) {
             Parent root = FXMLLoader.load(getClass()
-                    .getResource("./fx/ManagerBookDashboardScene.fxml"));
+                    .getResource("../view/fx/ManagerBookDashboardScene.fxml"));
             primaryStage.setTitle("Book Manging Dashboard");
             primaryStage.setScene(new Scene(root));
         }
     }
+    
+    public void switchToCart() throws Exception {
+        if (this.primaryStage != null) {
+            if (cartScene == null) {
+                FXMLLoader fxmlLoader = new FXMLLoader(
+                        getClass().getResource("../view/fx/CartScene.fxml"));
+                Parent root = (Parent) fxmlLoader.load();
+                cartScene = new Scene(root);
+                CartController cartController = fxmlLoader
+                        .<CartController> getController();
+                Controller.getInstance().cartController = cartController;
+            }
+            primaryStage.setTitle("Book Shopping!");
+            primaryStage.setScene(cartScene);
+        }
+    }
+    
+    public void switchToOrders() throws Exception {
+        if (this.primaryStage != null) {
+            Parent root = FXMLLoader.load(getClass()
+                    .getResource("../view/fx/OrdersScene.fxml"));
+            primaryStage.setTitle("Book Orders Dashboard");
+            primaryStage.setScene(new Scene(root));
+        }
+    } 
+    public void switchToCard() throws Exception{
 
+        if (this.primaryStage != null) {
+            Parent root = FXMLLoader.load(getClass()
+                    .getResource("../view/fx/CardScene.fxml"));
+            primaryStage.setTitle("Credit Cards Dashboard");
+            primaryStage.setScene(new Scene(root));
+        }
+    }
 }

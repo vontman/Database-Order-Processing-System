@@ -403,7 +403,7 @@ public class BookModel {
 		return true;
 	}
 	
-	public static boolean checkOut(List<String>bookIsbn, List<Integer>copies, String username, String cardNum) throws SQLException{
+	public static boolean checkOut(List<String>bookIsbn, List<Integer>copies, String username, String cardNum, String pin) throws SQLException{
 		try{
 			int totPrice= 0;
 			model.setAutoCommit(false);
@@ -413,7 +413,7 @@ public class BookModel {
 				book.setProperty("copies", ""+(book.getCopies()-copies.get(i)));
 				updateBook(book, bookIsbn.get(i));
 			}
-			int balance = UserModel.checkCreditCard(cardNum, totPrice, username);
+			int balance = UserModel.checkCreditCard(cardNum, pin, totPrice, username);
 			UserModel.updateCreditCard(cardNum, balance-totPrice);
 			addPurchases(bookIsbn, copies, username);
 			model.commit();

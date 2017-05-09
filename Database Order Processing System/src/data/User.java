@@ -36,10 +36,6 @@ public class User extends Properties {
         return getProperty("created");
     }
 
-    public Cart getCart() {
-        return null;
-    }
-
     public int isManager() {
         if (getProperty("manager") == null)
             return 0;

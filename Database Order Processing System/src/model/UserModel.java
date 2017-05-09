@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import data.User;
 
@@ -50,7 +51,7 @@ public class UserModel {
 		System.out.println("User added successfully.");
 		return true;
 	}
-	public static boolean createCreditCard(String cardNum, String passCode, String username, String expDate, int balance) throws SQLException {
+	public static boolean createCreditCard(String cardNum, String passCode, String username, String expDate, String balance) throws SQLException {
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
 		cols.add("number");
@@ -116,6 +117,26 @@ public class UserModel {
 		return users;
 		
 	}
+	public static List<Properties>getCards(String username) throws SQLException{
+		List<Properties>ret = new ArrayList<Properties>();
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		StringBuilder builder = new StringBuilder();
+		cols.add("username");
+		vals.add(username);
+		
+		ResultSet result = model.select("creditcard", cols, vals);
+		while(result.next()){
+			Properties p = new Properties();
+			p.setProperty("number", result.getString("number"));
+			p.setProperty("pin", result.getString("pin"));
+			p.setProperty("balance", result.getString("balance"));
+			p.setProperty("expirationdate", result.getString("expirationdate"));
+			p.setProperty("username", result.getString("username"));
+			ret.add(p);
+		}
+		return ret;
+	}
 	public static boolean checkUser(String username, String password) throws SQLException{
 		List<String>cols = new ArrayList<String>();
 		List<String>vals= new ArrayList<String>();
@@ -131,7 +152,7 @@ public class UserModel {
 			return false;
 		}
 	}
-	public static int checkCreditCard (String number, int price, String username) throws SQLException {
+	public static int checkCreditCard (String number, String pin, int price, String username) throws SQLException {
 		List<String> cols = new ArrayList<String>();
 		List<String> vals = new ArrayList<String>();
 		cols.add("Number");
@@ -143,12 +164,15 @@ public class UserModel {
 			throw new SQLException("Card not found.");
 		}
 		int balance = Integer.parseInt(result.getString("Balance"));
-		if (balance < price) {
-			throw new SQLException("Balance not enough.");
-		}
 		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		if(!result.getString("pin").equals(pin)){
+			throw new SQLException("Pin number is invalid.");
+		}
 		if(result.getString("expirationdate").compareTo(date) < 0){
 			throw new SQLException("Card is expired.");
+		}
+		if (balance < price) {
+			throw new SQLException("Balance not enough.");
 		}
 		return result.getInt("balance");
 	}
@@ -202,5 +226,16 @@ public class UserModel {
 		System.out.println("user deleted successfully.");
 		return true;
 	}
-	
+	public static boolean removeCreditCard(String cardNum, String username) throws SQLException {
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("number");
+		vals.add(cardNum);
+		cols.add("username");
+		vals.add(username);
+		model.delete("creditcard", cols, vals);
+		System.out.println("Card updated successfully.");
+		return true;
+	}
+
 }

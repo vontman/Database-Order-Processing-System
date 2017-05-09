@@ -1,8 +1,7 @@
 package controller;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import data.Book;
 import data.Category;
@@ -16,22 +15,25 @@ import model.BookModel;
 import model.ReportModel;
 import model.UserModel;
 import view.BookView;
-import view.Main;
 
 public class Controller {
 
     // private User dummyUser, dummyMngr;
     private User currUser;
-    // cart
-    private List<String> currBooks; // stores isbn of each book in the cart
 
-    private List<Integer> currCopies; // stores the number of ordered copies for
-                                      // each book
+    // cart
     private int totPrice;
     private Main mainWindow;
     private DashBoardController udController;
 
-    ObservableList<BookView> books = FXCollections.observableArrayList();
+    ObservableList<BookView> cartBooks = FXCollections.observableArrayList();
+    public CartController cartController;
+
+    ObservableList<BookView> books = FXCollections.observableArrayList(); // current
+                                                                          // books
+                                                                          // in
+                                                                          // the
+                                                                          // search
 
     private Controller() {
         // dummyUser = new User();
@@ -161,7 +163,7 @@ public class Controller {
     }
 
     public int getCartSize() {
-        return currBooks.size();
+        return cartBooks.size();
     }
 
     public boolean placeOrder(Order order) throws SQLException {
@@ -180,9 +182,35 @@ public class Controller {
         return BookModel.removeOrder(order.getBookIsbn());
     }
 
+
+    public void removeFromCart(Book book) {
+        int numberOfCopies = 0;
+        int i = 0;
+        for (BookView v : cartBooks) {
+            if (v.getIsbnProb().getValue().equals(book.getIsbn())) {
+                numberOfCopies = v.getRequestedProb().getValue();
+                cartBooks.remove(i);
+                break;
+            }
+            i++;
+        }
+        totPrice -= numberOfCopies * book.getPrice();
+    }
+
     public boolean addToCart(Book book, int numberOfCopies) {
-        currBooks.add(book.getIsbn());
-        currCopies.add(numberOfCopies);
+        BookView bkView = null;
+        boolean found = false;
+        for (BookView v : cartBooks) {
+            if (v.getIsbnProb().getValue().equals(book.getIsbn())) {
+                bkView = v;
+                found = true;
+            }
+        }
+        if (!found) {
+            bkView = new BookView(book);
+            cartBooks.add(bkView);
+        }
+        bkView.getRequestedProb().set(bkView.getRequestedProb().get()+numberOfCopies);
         totPrice += numberOfCopies * book.getPrice();
         return true;
     }
@@ -190,19 +218,27 @@ public class Controller {
     public List<Category> getCategories() throws SQLException {
         return BookModel.getCategories();
     }
-
+    public boolean addCreditCard(String cardNum, String passCode, String expDate, String balance) throws SQLException{
+    	UserModel.createCreditCard(cardNum, passCode, currUser.getUserName(), expDate, balance);
+    	return true;
+    }
     /**
      * @throws Exception
      *             with error message to be shown in case of failure
      */
-    public boolean checkOutCart(String cardNum) throws SQLException {
-        if (currBooks.size() == 0) {
+    public boolean checkOutCart(String cardNum, String pin) throws SQLException {
+        if (cartBooks.size() == 0) {
             throw new SQLException("Cart is empty.");
         }
-        BookModel.checkOut(currBooks, currCopies, currUser.getUserName(),
-                cardNum);
-        currBooks.clear();
-        currCopies.clear();
+        List<String> isbns = new LinkedList<>();
+        List<Integer> requests = new LinkedList<>();
+        for(BookView bkView : cartBooks) {
+            isbns.add(bkView.getIsbnProb().getValue());
+            requests.add(bkView.getRequestedProb().getValue());
+        }
+        BookModel.checkOut(isbns, requests, currUser.getUserName(),
+                cardNum, pin);
+        cartBooks.clear();
         return true;
     }
 
@@ -221,8 +257,9 @@ public class Controller {
     }
 
     public User updateUser(User user) throws SQLException {
-    	user.setProperty("manager", ""+this.currUser.isManager());
+		user.setProperty("manager", ""+this.currUser.isManager());
         UserModel.updateUser(user, currUser.getUserName());
+		
         this.currUser = user; // user updated
         return user;
     }
@@ -265,8 +302,6 @@ public class Controller {
             if (user != null) {
                 mainWindow.switchToMain(user);
                 this.currUser = user;
-                currBooks = new ArrayList<String>();
-                currCopies = new ArrayList<Integer>();
                 udController.setUser(user);
             }
 
@@ -276,15 +311,31 @@ public class Controller {
     }
 
     public void viewOrders() {
-        // TODO
+        try {
+            mainWindow.switchToOrders();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-    public void viewConfirmOrder() {
-        // TODO
+    public List<Properties> getCards() throws SQLException {
+        return UserModel.getCards(currUser.getUserName());
+    }
+    
+    public List<Order> getOrders() throws Exception {
+        return BookModel.getOrders();
+    }
+    
+    public void addOrder(Order order) throws Exception {
+        BookModel.addOrder(order);
     }
 
     public void viewCart() {
-        // TODO
+        try {
+            mainWindow.switchToCart();
+            this.cartController.setCart();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void showErrorDialogue(String title, String message) {
@@ -317,8 +368,16 @@ public class Controller {
     public void showErrorDialogue(String message) {
         showErrorDialogue("Error", message);
     }
-    public void showReports() throws SQLException{
+    public void showReports(){
     	ReportModel.prepareReports();
     }
 
+	public void viewCardScene() {
+		 try {
+            mainWindow.switchToCard();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
 }
