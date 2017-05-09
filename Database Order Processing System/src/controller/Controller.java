@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import model.BookModel;
+import model.ReportModel;
 import model.UserModel;
 import view.BookView;
 import view.Main;
@@ -220,6 +221,7 @@ public class Controller {
     }
 
     public User updateUser(User user) throws SQLException {
+    	user.setProperty("manager", ""+this.currUser.isManager());
         UserModel.updateUser(user, currUser.getUserName());
         this.currUser = user; // user updated
         return user;
@@ -314,6 +316,9 @@ public class Controller {
 
     public void showErrorDialogue(String message) {
         showErrorDialogue("Error", message);
+    }
+    public void showReports() throws SQLException{
+    	ReportModel.prepareReports();
     }
 
 }

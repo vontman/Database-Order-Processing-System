@@ -269,6 +269,8 @@ public class DashBoardController {
                         int order = Integer.parseInt(entered);
                         if (order > 0) {
                             ctrl.addToCart(book, order);
+                            itemsTF.setText(""+ctrl.getCartSize());
+                            priceTF.setText(""+ctrl.getCartTotPrice());
                             new Alert(Alert.AlertType.INFORMATION,
                                     "Added to cart.").showAndWait();
                         }
@@ -354,7 +356,7 @@ public class DashBoardController {
 
             newUser = this.ctrl.updateUser(newUser);
             this.currUser = newUser;
-            new Alert(Alert.AlertType.INFORMATION, "User created successfully.")
+            new Alert(Alert.AlertType.INFORMATION, "User updated successfully.")
                     .showAndWait();
         } catch (Exception ex) {
             new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();

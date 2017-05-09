@@ -94,7 +94,17 @@ public class BookModel {
 			cols.add("price");
 			vals.add("" + book.getPrice());
 			model.insert("BOOK", cols, vals);
+			try{
+				addPublisher(book.getPublisher());
+			}catch(SQLException ex){
+				
+			}
 			for (String author : book.getAuthors()) {
+				try{
+					addAuthor(author);
+				}catch(Exception ex){
+					
+				}
 				addAuthorRelation(book.getIsbn(), author);
 			}
 			model.commit();
@@ -124,6 +134,20 @@ public class BookModel {
 		
 		model.insert("AUTHORS", cols, vals);
 		System.out.println("Author added successfully.");
+		return true;
+	}
+	public static boolean addPublisher(String publisher) throws SQLException{
+		List<String>cols = new ArrayList<String>();
+		List<String>vals= new ArrayList<String>();
+		cols.add("Name");
+		vals.add(publisher);
+		cols.add("Address");
+		vals.add("dummy address");
+		cols.add("Phone_number");
+		vals.add("012");
+		
+		model.insert("publisher", cols, vals);
+		System.out.println("publisher added successfully.");
 		return true;
 	}
 	public static boolean addOrder(Order order) throws SQLException{
@@ -328,6 +352,20 @@ public class BookModel {
 		vals.add("" + book.getThreshold());
 		cols.add("price");
 		vals.add("" + book.getPrice());
+		model.executeUpdate("DELETE from book_has_authors where book_isbn='"+book.getIsbn()+"'");
+		try{
+			addPublisher(book.getPublisher());
+		}catch(SQLException ex){
+			
+		}
+		for (String author : book.getAuthors()) {
+			try{
+				addAuthor(author);
+			}catch(Exception ex){
+				
+			}
+			addAuthorRelation(book.getIsbn(), author);
+		}
 		
 		model.update("BOOK", cols, vals, "isbn", isbn);
 		System.out.println("Book updated successfully.");

@@ -23,6 +23,9 @@ public class Model {
 	public void setAutoCommit(boolean val) throws SQLException{
 		connection.setAutoCommit(val);
 	}
+	public Connection getConnection(){
+		return connection;
+	}
 	public void commit() throws SQLException{
 		connection.commit();
 	}

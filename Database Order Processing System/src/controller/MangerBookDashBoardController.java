@@ -120,6 +120,8 @@ public class MangerBookDashBoardController {
 
         titleCol.setCellValueFactory(
                 cellData -> cellData.getValue().getTitleProb());
+        yearCol.setCellValueFactory(
+                cellData -> cellData.getValue().getYearProb());
         isbnCol.setCellValueFactory(
                 cellData -> cellData.getValue().getIsbnProb());
         authorsCol.setCellValueFactory(
@@ -217,7 +219,8 @@ public class MangerBookDashBoardController {
                     ctrl.removeBook(book);
                     books.remove(getIndex());
                     bookTableView.refresh();
-                    ctrl.showConfirmDialogue("Book removed succesfully");
+                    new Alert(Alert.AlertType.INFORMATION, "Book removed successfully.")
+                    .showAndWait();
                 } catch (Exception e) {
                     ctrl.showErrorDialogue(e.getMessage());
                 }
@@ -249,7 +252,8 @@ public class MangerBookDashBoardController {
                         ctrl.updateBook(book.toBook(), book.getOldIsbn());
                         book.updateOldIsbn();
                         bookTableView.refresh();
-                        ctrl.showConfirmDialogue("Book update succefully");
+                        new Alert(Alert.AlertType.INFORMATION, "Book updated successfully.")
+                        .showAndWait();
                     } catch (Exception e) {
                         ctrl.showErrorDialogue(e.getMessage());
                     }
@@ -326,8 +330,9 @@ public class MangerBookDashBoardController {
             bkFactory.setThreshold(newBkThresholdTF.getText());
 
             ctrl.addBook(bkFactory.getBook());
+            new Alert(Alert.AlertType.INFORMATION,
+                    "Book added successfully.").showAndWait();
         } catch (Exception ex) {
-            ex.printStackTrace();
             ctrl.showErrorDialogue(ex.getMessage());
         }
     }
