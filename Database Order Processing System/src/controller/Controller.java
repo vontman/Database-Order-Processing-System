@@ -17,7 +17,7 @@ import view.Main;
 
 public class Controller {
 
-    private User dummyUser, dummyMngr;
+//    private User dummyUser, dummyMngr;
     private User currUser;
     // cart
     private List<String> currBooks; // stores isbn of each book in the cart
@@ -27,13 +27,13 @@ public class Controller {
     private DashBoardController udController;
 
     private Controller() {
-        dummyUser = new User();
-        dummyMngr = new User();
-        dummyUser.setProperty("username", "u");
-        dummyMngr.setProperty("username", "m");
-        dummyUser.setProperty("password", "123");
-        dummyMngr.setProperty("password", "012");
-        dummyMngr.setProperty("manager", "1");
+//        dummyUser = new User();
+//        dummyMngr = new User();
+//        dummyUser.setProperty("username", "u");
+//        dummyMngr.setProperty("username", "m");
+//        dummyUser.setProperty("password", "123");
+//        dummyMngr.setProperty("password", "012");
+//        dummyMngr.setProperty("manager", "1");
     }
 
     private static Controller instance;
@@ -56,14 +56,17 @@ public class Controller {
     /**
      * @return User instance if exists or null if not exists
      */
-    public User userLogin(String userName, String password) throws Exception {
-        if (userName.equals(dummyUser.getUserName())
-                && password.equals(dummyUser.getPassword()))
-            return dummyUser;
-        if (userName.equals(dummyMngr.getUserName())
-                && password.equals(dummyMngr.getPassword()))
-            return dummyMngr;
-        return null;
+    public User userLogin(String userName, String password) throws SQLException {
+//        if (userName.equals(dummyUser.getUserName())
+//                && password.equals(dummyUser.getPassword()))
+//            return dummyUser;
+//        if (userName.equals(dummyMngr.getUserName())
+//                && password.equals(dummyMngr.getPassword()))
+//            return dummyMngr;
+//        return null;
+    	if(UserModel.checkUser(userName, password))
+    		return UserModel.getUser(userName);
+    	throw new SQLException("Invalid Credintials");
     }
 
     /**
@@ -81,7 +84,7 @@ public class Controller {
 //        book.setProperty("copies", "200");
 //        ret.add(book);
 //        return ret;
-    	System.out.println(book);
+//    	System.out.println(book);
     	List<String>keys = new ArrayList<String>();
     	List<String>vals = new ArrayList<String>();
     	String category = null;
