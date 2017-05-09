@@ -23,7 +23,7 @@ public class BookFactory {
     }
 
     public void setPrice(int val) {
-        book.setProperty("price", Double.toString(val));
+        book.setProperty("price", Integer.toString(val));
     }
 
     public void setPrice(String val) {
@@ -31,6 +31,7 @@ public class BookFactory {
             setPrice(Integer.parseInt(val));
         } catch (NumberFormatException e) {
             book.remove("price");
+            throw new RuntimeException("invalid number");
         }
     }
 
@@ -39,6 +40,7 @@ public class BookFactory {
             setCopies(Integer.parseInt(val));
         } catch (NumberFormatException e) {
             book.remove("copies");
+            throw new RuntimeException("invalid number");
         }
     }
 
@@ -59,6 +61,7 @@ public class BookFactory {
             book.setProperty("category_id", Integer.toString(id));
         } catch (NumberFormatException e) {
             book.remove("category_id");
+            throw new RuntimeException("invalid number");
         }
     }
 
@@ -71,10 +74,15 @@ public class BookFactory {
     }
 
     public void setThreshold(int val) {
+        book.setProperty("threshold", Integer.toString(val));
+    }
+    
+    public void setThreshold(String val) throws RuntimeException {
         try {
-            book.setProperty("threshold", Integer.toString(val));
+            setThreshold(Integer.parseInt(val));
         } catch (NumberFormatException e) {
             book.remove("threshold");
+            throw new RuntimeException("invalid number");
         }
     }
 

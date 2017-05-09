@@ -38,7 +38,6 @@ public class Main extends Application {
 
     public void switchToSignUp() throws Exception {
         if (this.primaryStage != null) {
-            System.out.println("here");
             Parent root = FXMLLoader
                     .load(getClass().getResource("./fx/UserSignUpScene.fxml"));
             primaryStage.setTitle("Book Shopping Sign up");
@@ -58,11 +57,20 @@ public class Main extends Application {
                 Controller.getInstance().setDashBoardController(udController);
             }
             System.out.println(user.isManager());
-            if (user.isManager()==1)
+            if (user.isManager() == 1)
                 primaryStage.setTitle("Book Shopping - Manager!");
             else
                 primaryStage.setTitle("Book Shopping!");
             primaryStage.setScene(dashboardScene);
+        }
+    }
+
+    public void switchToBookEdit() throws Exception {
+        if (this.primaryStage != null) {
+            Parent root = FXMLLoader.load(getClass()
+                    .getResource("./fx/ManagerBookDashboardScene.fxml"));
+            primaryStage.setTitle("Book Manging Dashboard");
+            primaryStage.setScene(new Scene(root));
         }
     }
 

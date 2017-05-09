@@ -1,44 +1,69 @@
 package view;
 
 import data.Book;
+import data.BookFactory;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class BookView extends Book {
+public class BookView {
 
-    StringProperty titleProb, isbnProb, authorsProb, publisherProb, yearProb, categoryProb;
-    IntegerProperty priceProb, copiesProb;
-	public BookView(Book book) {
-		titleProb = new SimpleStringProperty();
-		isbnProb  = new SimpleStringProperty(); 
-		authorsProb = new SimpleStringProperty();
-		publisherProb = new SimpleStringProperty();
-		yearProb = new SimpleStringProperty();
-		categoryProb = new SimpleStringProperty();
-	    priceProb  = new SimpleIntegerProperty();
-	    copiesProb  = new SimpleIntegerProperty();
-	    
-	    this.putAll(book);
-	    
-	    titleProb.set(book.getTitle());
-		isbnProb.set(book.getIsbn()); 
-		authorsProb.set(String.join(", ", book.getAuthors()));
-		publisherProb.set(book.getPublisher());
-		yearProb.set(book.getPublishYear());
-	    priceProb.set(book.getPrice());
-	    copiesProb.set(book.getCopies());
-	    categoryProb.set(book.getCategory());
-	    
-	}
+    private StringProperty titleProb, isbnProb, authorsProb, publisherProb,
+            yearProb, categoryProb;
+    private IntegerProperty priceProb, copiesProb, thresholdProb,
+            categoryIDProb;
+
+    private String oldIsbn;
+
+    public BookView(Book book) {
+
+        titleProb = new SimpleStringProperty();
+        isbnProb = new SimpleStringProperty();
+        authorsProb = new SimpleStringProperty();
+        publisherProb = new SimpleStringProperty();
+        yearProb = new SimpleStringProperty();
+        categoryProb = new SimpleStringProperty();
+        priceProb = new SimpleIntegerProperty();
+        copiesProb = new SimpleIntegerProperty();
+        thresholdProb = new SimpleIntegerProperty();
+        categoryIDProb = new SimpleIntegerProperty();
+
+        titleProb.set(book.getTitle());
+        isbnProb.set(book.getIsbn());
+        authorsProb.set(String.join(", ", book.getAuthors()));
+        publisherProb.set(book.getPublisher());
+        yearProb.set(book.getPublishYear());
+        priceProb.set(book.getPrice());
+        copiesProb.set(book.getCopies());
+        thresholdProb.set(book.getThreshold());
+        categoryProb.set(book.getCategory());
+        categoryIDProb.set(book.getCategoryId());
+
+        oldIsbn = book.getIsbn();
+
+    }
+
+    public IntegerProperty getCategoryIDProb() {
+        return categoryIDProb;
+    }
+
+    public void setCategoryIDProb(IntegerProperty categoryIDProb) {
+        this.categoryIDProb = categoryIDProb;
+    }
+
+    public void setThresholdProb(IntegerProperty thresholdProb) {
+        this.thresholdProb = thresholdProb;
+    }
+
     public StringProperty getCategoryProb() {
         return categoryProb;
     }
 
     public void setCategoryProb(StringProperty categoryProb) {
-        this.categoryProb= categoryProb;
+        this.categoryProb = categoryProb;
     }
+
     public StringProperty getTitleProb() {
         return titleProb;
     }
@@ -86,13 +111,44 @@ public class BookView extends Book {
     public void setPriceProb(IntegerProperty priceProb) {
         this.priceProb = priceProb;
     }
-    
+
     public IntegerProperty getCopiesProb() {
-    	return copiesProb;
-    }
-    
-    public void setCopiesProb(IntegerProperty copiesProb) {
-    	this.copiesProb = copiesProb;
+        return copiesProb;
     }
 
+    public void setCopiesProb(IntegerProperty copiesProb) {
+        this.copiesProb = copiesProb;
+    }
+
+    public IntegerProperty getThresholdProb() {
+        return thresholdProb;
+    }
+
+    public void setThreasholdProb(IntegerProperty copiesProb) {
+        this.thresholdProb = copiesProb;
+    }
+
+    public void updateOldIsbn() {
+        this.oldIsbn = this.getIsbnProb().getValue();
+    }
+
+    public String getOldIsbn() {
+        return oldIsbn;
+    }
+
+    public Book toBook() {
+        BookFactory bkFactory = new BookFactory();
+        bkFactory.setAuthors(this.getAuthorsProb().get());
+        bkFactory.setCategory(this.getCategoryProb().getValue());
+        bkFactory.setCategoryId(this.getCategoryIDProb().getValue());
+        bkFactory.setCopies(this.getCopiesProb().getValue());
+        bkFactory.setIsbn(this.getIsbnProb().getValue());
+        bkFactory.setPrice(this.getPriceProb().getValue());
+        bkFactory.setPublisher(this.getPublisherProb().getValue());
+        bkFactory.setPublishYear(this.getYearProb().getValue());
+        bkFactory.setThreshold(this.getThresholdProb().getValue());
+        bkFactory.setTitle(this.getTitleProb().getValue());
+
+        return bkFactory.getBook();
+    }
 }

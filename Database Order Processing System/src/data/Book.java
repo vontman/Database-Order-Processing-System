@@ -25,7 +25,9 @@ public class Book extends Properties {
     }
 
     public int getCategoryId() {
-        return Integer.parseInt(getProperty("category_id"));
+        if (getProperty("category_id") != null)
+            return Integer.parseInt(getProperty("category_id"));
+        return 0;
     }
 
     public String getCategory() {
@@ -33,7 +35,9 @@ public class Book extends Properties {
     }
 
     public int getThreshold() {
-        return Integer.parseInt(getProperty("threshold"));
+        if(getProperty("threshold") != null)
+            return Integer.parseInt(getProperty("threshold"));
+        return Integer.MIN_VALUE;
     }
 
     public String[] getAuthors() {

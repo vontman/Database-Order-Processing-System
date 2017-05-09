@@ -45,16 +45,17 @@ public class DashBoardController {
 
     @FXML
     private TableView<BookView> bookTableView;
-    
+
     @FXML
-    private TableColumn<BookView, String> titleCol, isbnCol, authorsCol, publisherCol, yearCol, categoryCol;
+    private TableColumn<BookView, String> titleCol, isbnCol, authorsCol,
+            publisherCol, yearCol, categoryCol;
     private TableColumn col_action;
-    
+
     @FXML
     private TableColumn<BookView, Integer> priceCol, copiesCol;
 
     @FXML
-    private Button addBkBtn;
+    private Button editBkBtn;
 
     @FXML
     private TextArea addressTA;
@@ -82,33 +83,6 @@ public class DashBoardController {
 
     @FXML
     private TitledPane mngrPanel;
-
-    @FXML
-    private TextField newBkAuthorTF;
-
-    @FXML
-    private TextField newBkCategoryTF;
-
-    @FXML
-    private TextField newBkCopiesTF;
-
-    @FXML
-    private TextField newBkISBNTF;
-
-    @FXML
-    private TextField newBkPriceTF;
-
-    @FXML
-    private TextField newBkPublicationYearTF;
-
-    @FXML
-    private TextField newBkPublisherTF;
-
-    @FXML
-    private TextField newBkThresholdTF;
-
-    @FXML
-    private TextField newBkTitleTF;
 
     @FXML
     private Button ordersBtn;
@@ -158,11 +132,11 @@ public class DashBoardController {
     @FXML
     private Button userSaveBtn;
 
-	private TextInputDialog dialog;
-    
+    private TextInputDialog dialog;
+
     @FXML
     void initialize() {
-        assert addBkBtn != null : "fx:id=\"addBkBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
+        assert editBkBtn != null : "fx:id=\"addBkBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert addressTA != null : "fx:id=\"addressTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert checkoutBtn != null : "fx:id=\"checkoutBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert emailTF != null : "fx:id=\"emailTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
@@ -172,15 +146,6 @@ public class DashBoardController {
         assert lastNameTF != null : "fx:id=\"lastNameTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert logOutBtn != null : "fx:id=\"logOutBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert mngrPanel != null : "fx:id=\"mngrPanel\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert newBkAuthorTF != null : "fx:id=\"newBkAuthorTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert newBkCategoryTF != null : "fx:id=\"newBkCategoryTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert newBkCopiesTF != null : "fx:id=\"newBkCopiesTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert newBkISBNTF != null : "fx:id=\"newBkISBNTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert newBkPriceTF != null : "fx:id=\"newBkPriceTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert newBkPublicationYearTF != null : "fx:id=\"newBkPublicationYearTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert newBkPublisherTF != null : "fx:id=\"newBkPublisherTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert newBkThresholdTF != null : "fx:id=\"newBkThresholdTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
-        assert newBkTitleTF != null : "fx:id=\"newBkTitleTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert ordersBtn != null : "fx:id=\"ordersBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert passwordPF != null : "fx:id=\"passwordPF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert phoneTF != null : "fx:id=\"phoneTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
@@ -200,21 +165,21 @@ public class DashBoardController {
 
         ctrl = Controller.getInstance();
         try {
-			for(Category c : ctrl.getCategories()){
-				srchBkCategoryCB.getItems().add(c);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-        
+            for (Category c : ctrl.getCategories()) {
+                srchBkCategoryCB.getItems().add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private User currUser;
     private Controller ctrl;
-    private ObservableList<BookView> books = FXCollections.observableArrayList();
 
     @SuppressWarnings("unchecked")
-	public void setUser(User user) {
+    public void setUser(User user) {
+        ctrl.books.clear();
         this.currUser = user;
         userNameLbl.setText(user.getUserName());
         passwordPF.setText(user.getPassword());
@@ -232,53 +197,63 @@ public class DashBoardController {
                 : user.getProperty("address"));
 
         setManagerView(user.isManager() == 1);
-        
-        titleCol.setCellValueFactory(cellData -> cellData.getValue().getTitleProb());
-        isbnCol.setCellValueFactory(cellData -> cellData.getValue().getIsbnProb());
-        authorsCol.setCellValueFactory(cellData -> cellData.getValue().getAuthorsProb());
-        publisherCol.setCellValueFactory(cellData -> cellData.getValue().getPublisherProb());
-        yearCol.setCellValueFactory(cellData -> cellData.getValue().getYearProb());
-        categoryCol.setCellValueFactory(cellData -> cellData.getValue().getCategoryProb());
-        priceCol.setCellValueFactory(cellData -> cellData.getValue().getPriceProb().asObject());
-        copiesCol.setCellValueFactory(cellData -> cellData.getValue().getCopiesProb().asObject());
-        
+
+        titleCol.setCellValueFactory(
+                cellData -> cellData.getValue().getTitleProb());
+        isbnCol.setCellValueFactory(
+                cellData -> cellData.getValue().getIsbnProb());
+        authorsCol.setCellValueFactory(
+                cellData -> cellData.getValue().getAuthorsProb());
+        publisherCol.setCellValueFactory(
+                cellData -> cellData.getValue().getPublisherProb());
+        yearCol.setCellValueFactory(
+                cellData -> cellData.getValue().getYearProb());
+        categoryCol.setCellValueFactory(
+                cellData -> cellData.getValue().getCategoryProb());
+        priceCol.setCellValueFactory(
+                cellData -> cellData.getValue().getPriceProb().asObject());
+        copiesCol.setCellValueFactory(
+                cellData -> cellData.getValue().getCopiesProb().asObject());
+
         col_action = new TableColumn<>("Action");
         col_action.setPrefWidth(125);
         bookTableView.getColumns().add(col_action);
-        
-        col_action.setCellValueFactory(
-                new Callback<TableColumn.CellDataFeatures<Record, Boolean>, 
-                ObservableValue<Boolean>>() {
 
-            @Override
-            public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Record, Boolean> p) {
-                return new SimpleBooleanProperty(p.getValue() != null);
-            }
-        });
+        col_action.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Record, Boolean>, ObservableValue<Boolean>>() {
+
+                    @Override
+                    public ObservableValue<Boolean> call(
+                            TableColumn.CellDataFeatures<Record, Boolean> p) {
+                        return new SimpleBooleanProperty(p.getValue() != null);
+                    }
+                });
         col_action.setCellFactory(
                 new Callback<TableColumn<Record, Boolean>, TableCell<Record, Boolean>>() {
 
-            @Override
-            public TableCell<Record, Boolean> call(TableColumn<Record, Boolean> p) {
-                return new ButtonCell();
-            }
-        
-        });
-        bookTableView.setItems(books);
+                    @Override
+                    public TableCell<Record, Boolean> call(
+                            TableColumn<Record, Boolean> p) {
+                        return new ButtonCell();
+                    }
+
+                });
+        bookTableView.setItems(ctrl.books);
     }
+
     private class ButtonCell extends TableCell<Record, Boolean> {
         final Button cellButton = new Button("Add to Cart");
-        
-        ButtonCell(){
-            
-        	//Action when the button is pressed
-            cellButton.setOnAction(new EventHandler<ActionEvent>(){
+
+        ButtonCell() {
+
+            // Action when the button is pressed
+            cellButton.setOnAction(new EventHandler<ActionEvent>() {
 
                 @Override
                 public void handle(ActionEvent t) {
-                	Book book = books.get(getIndex());
+                    Book book = ctrl.books.get(getIndex()).toBook();
 
-            		dialog = new TextInputDialog("0");
+                    dialog = new TextInputDialog("0");
                     dialog.setTitle("Order Book");
                     dialog.setHeaderText("Enter order quantity");
                     Optional<String> result = dialog.showAndWait();
@@ -286,28 +261,31 @@ public class DashBoardController {
                     if (result.isPresent()) {
                         entered = result.get();
                     }
-                    try{
-                    	int order = Integer.parseInt(entered);
-                    	if(order > 0){
-	                    	ctrl.addToCart(book, order);
-	                    	new Alert(Alert.AlertType.INFORMATION, "Added to cart.").showAndWait();
-                    	}
-                    }catch(NumberFormatException e){
-                    	new Alert(Alert.AlertType.ERROR, "Invalid number.").showAndWait();
+                    try {
+                        int order = Integer.parseInt(entered);
+                        if (order > 0) {
+                            ctrl.addToCart(book, order);
+                            new Alert(Alert.AlertType.INFORMATION,
+                                    "Added to cart.").showAndWait();
+                        }
+                    } catch (NumberFormatException e) {
+                        new Alert(Alert.AlertType.ERROR, "Invalid number.")
+                                .showAndWait();
                     }
                 }
             });
         }
 
-        //Display button if the row is not empty
+        // Display button if the row is not empty
         @Override
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
-            if(!empty){
+            if (!empty) {
                 setGraphic(cellButton);
             }
         }
     }
+
     public void setManagerView(boolean isManager) {
         System.out.println("Manager = " + isManager);
         mngrPanel.setExpanded(isManager);
@@ -315,10 +293,10 @@ public class DashBoardController {
     }
 
     public void showBooks(List<Book> books) {
-        this.books.clear();
-        for(Book book : books){
-        	BookView bookView = new BookView(book);
-        	this.books.add(bookView);
+        ctrl.books.clear();
+        for (Book book : books) {
+            BookView bookView = new BookView(book);
+            ctrl.books.add(bookView);
         }
         this.bookTableView.refresh();
     }
@@ -356,23 +334,23 @@ public class DashBoardController {
 
     @FXML
     protected void handleBkSearchBtnAction(ActionEvent e) {
-    	//TODO : add only valid vals
+        // TODO : add only valid vals
         BookFactory bkFactory = new BookFactory();
         bkFactory.setIsbn(srchBkISBNTF.getText());
         bkFactory.setTitle(srchBkTitleTF.getText());
         bkFactory.setAuthors(srchBkAuthorTF.getText());
-        if(!srchBkCategoryCB.getSelectionModel().isEmpty()){
-        	bkFactory.setCategoryId(srchBkCategoryCB.getValue().getId());
-        	bkFactory.setCategory(srchBkCategoryCB.getValue().getType());
+        if (!srchBkCategoryCB.getSelectionModel().isEmpty()) {
+            bkFactory.setCategoryId(srchBkCategoryCB.getValue().getId());
+            bkFactory.setCategory(srchBkCategoryCB.getValue().getType());
         }
         bkFactory.setPublisher(srchBkPublisherTF.getText());
         bkFactory.setPublishYear(srchBkPublicationYearTF.getText());
 
         try {
-			showBooks(this.ctrl.bookSearch(bkFactory.getBook()));
-		} catch (SQLException e1) {
-        	new Alert(Alert.AlertType.ERROR, e1.getMessage()).showAndWait();
-		}
+            showBooks(this.ctrl.bookSearch(bkFactory.getBook()));
+        } catch (SQLException e1) {
+            new Alert(Alert.AlertType.ERROR, e1.getMessage()).showAndWait();
+        }
     }
 
     @FXML
@@ -395,6 +373,7 @@ public class DashBoardController {
     @FXML
     protected void handlePromotUserBtnAction(ActionEvent e) {
         try {
+            System.out.println("Here");
             ctrl.promoteUser(promotUserNameTF.getText());
         } catch (Exception ex) {
             ctrl.showErrorDialogue(ex.getMessage());
@@ -420,21 +399,11 @@ public class DashBoardController {
     }
 
     @FXML
-    protected void handleAddBkBtnAction(ActionEvent e) {
+    protected void handleEditBkBtnAction(ActionEvent e) {
         try {
-            BookFactory bkFactory = new BookFactory();
-            bkFactory.setTitle(newBkTitleTF.getText());
-            bkFactory.setAuthors(newBkAuthorTF.getText());
-            bkFactory.setCategory(newBkCategoryTF.getText());
-            bkFactory.setPublisher(newBkPublisherTF.getText());
-            bkFactory.setPublishYear(newBkPublicationYearTF.getText());
-            bkFactory.setIsbn(newBkISBNTF.getText());
-            bkFactory.setPrice(newBkPriceTF.getText());
-            bkFactory.setCopies(newBkCopiesTF.getText());
-
-            ctrl.addBook(bkFactory.getBook());
+            ctrl.viewBookEdit();
         } catch (Exception ex) {
-            ctrl.showErrorDialogue(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 }
