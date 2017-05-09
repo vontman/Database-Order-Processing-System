@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<VBox prefHeight="759.0" prefWidth="1024.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="controller.CartController">
+  <BorderPane prefHeight="607.0" prefWidth="762.0">
+    <center>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+        <center>
+          <ScrollPane prefHeight="606.9998779296875" prefWidth="1014.0">
+            <content>
+              <TableView fx:id="bookTableView" editable="true" focusTraversable="true" prefHeight="641.0" prefWidth="1010.0" tableMenuButtonVisible="false">
+                <columns>
+                  <TableColumn prefWidth="75.0" text="No. Items" fx:id="itemsCol" />
+                  <TableColumn editable="false" prefWidth="75.0" text="Isbn" fx:id="isbnCol" />
+                  <TableColumn prefWidth="75.0" text="Title" fx:id="titleCol" />
+                  <TableColumn prefWidth="75.0" text="Authors" fx:id="authorsCol" />
+                  <TableColumn prefWidth="75.0" text="Publisher" fx:id="publisherCol" />
+                  <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="144.0" text="Publication year" fx:id="yearCol" />
+                  <TableColumn prefWidth="75.0" text="Category" fx:id="categoryCol" />
+                  <TableColumn prefWidth="75.0" text="Price" fx:id="priceCol" />
+                </columns>
+              </TableView>
+            </content>
+          </ScrollPane>
+        </center>
+      </BorderPane>
+    </center>
+  </BorderPane>
+  <padding>
+    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+  </padding>
+  <AnchorPane id="Content" minHeight="114.0" prefHeight="114.0" prefWidth="758.0" />
+  <Button id="" fx:id="backBtn" mnemonicParsing="false" onAction="#handleBackBtnAction" prefWidth="110.0" text="Back" />
+</VBox>
