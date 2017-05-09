@@ -132,6 +132,9 @@ public class DashBoardController {
     @FXML
     private Button userSaveBtn;
 
+    @FXML
+    private Button creditCardBtn;
+
     private TextInputDialog dialog;
 
     @FXML
@@ -162,6 +165,7 @@ public class DashBoardController {
         assert srchBtn != null : "fx:id=\"srchBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert userNameLbl != null : "fx:id=\"userNameTF\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
         assert userSaveBtn != null : "fx:id=\"userSaveBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
+        assert creditCardBtn != null : "fx:id=\"creditCardBtn\" was not injected: check your FXML file 'UserDashboardScene.fxml'.";
 
         ctrl = Controller.getInstance();
         try {
@@ -286,6 +290,19 @@ public class DashBoardController {
         }
     }
 
+    private String getInpFromUser(String defaultString, String title,
+            String text) {
+        dialog = new TextInputDialog(defaultString);
+        dialog.setTitle(title);
+        dialog.setHeaderText(text);
+        Optional<String> result = dialog.showAndWait();
+        String entered = "0";
+        if (result.isPresent()) {
+            entered = result.get();
+        }
+        return entered;
+    }
+
     public void setManagerView(boolean isManager) {
         System.out.println("Manager = " + isManager);
         mngrPanel.setExpanded(isManager);
@@ -299,6 +316,16 @@ public class DashBoardController {
             ctrl.books.add(bookView);
         }
         this.bookTableView.refresh();
+    }
+
+    @FXML
+    protected void handleShowCreditCardsAction(ActionEvent e) {
+        System.out.println("Show cards");
+        try {
+
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+        }
     }
 
     @FXML
@@ -327,14 +354,15 @@ public class DashBoardController {
 
             newUser = this.ctrl.updateUser(newUser);
             this.currUser = newUser;
+            new Alert(Alert.AlertType.INFORMATION, "User created successfully.")
+                    .showAndWait();
         } catch (Exception ex) {
-            ctrl.showErrorDialogue("Error", ex.getMessage());
+            new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 
     @FXML
     protected void handleBkSearchBtnAction(ActionEvent e) {
-        // TODO : add only valid vals
         BookFactory bkFactory = new BookFactory();
         bkFactory.setIsbn(srchBkISBNTF.getText());
         bkFactory.setTitle(srchBkTitleTF.getText());
@@ -360,41 +388,47 @@ public class DashBoardController {
 
     @FXML
     protected void handleCheckoutBtnAction(ActionEvent e) {
+        System.out.println("checkout");
         try {
-            // TODO credit card
-            ctrl.checkOutCart("");
-            // TODO success
+            ctrl.checkOutCart(getInpFromUser("00000", "Check Out",
+                    "Please enter the number of the credit card"));
+            new Alert(Alert.AlertType.INFORMATION, "Checked out successfully.")
+                    .showAndWait();
         } catch (Exception ex) {
-            // TODO failure
-            ctrl.showErrorDialogue("Error", ex.getMessage());
+            new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 
     @FXML
     protected void handlePromotUserBtnAction(ActionEvent e) {
+        System.out.println("promote");
         try {
             System.out.println("Here");
             ctrl.promoteUser(promotUserNameTF.getText());
+            new Alert(Alert.AlertType.INFORMATION, "User Promoted successfully")
+                    .showAndWait();
         } catch (Exception ex) {
-            ctrl.showErrorDialogue(ex.getMessage());
+            new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 
     @FXML
     protected void handleOrdersBtnAction(ActionEvent e) {
+        System.out.println("handle orders");
         try {
             ctrl.viewOrders();
         } catch (Exception ex) {
-            ctrl.showErrorDialogue(ex.getMessage());
+            new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 
     @FXML
     protected void handleGenerateReportsBtnAction(ActionEvent e) {
+        System.out.println("Generate reports");
         try {
             ctrl.viewOrders();
         } catch (Exception ex) {
-            ctrl.showErrorDialogue(ex.getMessage());
+            new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
         }
     }
 

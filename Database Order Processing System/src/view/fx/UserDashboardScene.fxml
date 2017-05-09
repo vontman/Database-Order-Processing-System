@@ -57,6 +57,7 @@
           <VBox alignment="CENTER" fillWidth="true" spacing="10.0">
             <children>
               <Button id="logInBtn" fx:id="userSaveBtn" defaultButton="true" mnemonicParsing="false" onAction="#handleSaveUserAction" prefWidth="150.0" text="save" />
+              <Button id="creditCardBtn" fx:id="creditCardBtn" defaultButton="true" mnemonicParsing="false" onAction="#handleShowCreditCardsAction" prefWidth="150.0" text="Show Credit Cards" />
             </children>
           </VBox>
           <Separator prefWidth="200.0">
@@ -209,7 +210,7 @@
                   <HBox alignment="CENTER_LEFT" spacing="20.0" HBox.hgrow="ALWAYS">
                     <children>
                       <TextField fx:id="promotUserNameTF" prefWidth="200.0" promptText="usename" HBox.hgrow="SOMETIMES" />
-                      <Button fx:id="promotUserBtn" mnemonicParsing="false" onAction="#handlePromotUserBtnAction" text="promote user" />
+                      <Button fx:id="promotUserBtn" onAction="#handlePromotUserBtnAction"  mnemonicParsing="false" text="promote user" />
                     </children>
                     <padding>
                       <Insets left="10.0" right="10.0" />

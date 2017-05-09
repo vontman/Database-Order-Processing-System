@@ -23,9 +23,10 @@ public class Controller {
     private User currUser;
     // cart
     private List<String> currBooks; // stores isbn of each book in the cart
+
     private List<Integer> currCopies; // stores the number of ordered copies for
                                       // each book
-
+    private int totPrice;
     private Main mainWindow;
     private DashBoardController udController;
 
@@ -135,7 +136,7 @@ public class Controller {
         return (user.isManager() == 1);
     }
 
-    public boolean addBook(Book book) throws Exception {
+    public boolean addBook(Book book) throws SQLException {
         // TODO Auto-generated method stub
         // don't forget to handle category number
         if (!checkIfManager())
@@ -152,6 +153,14 @@ public class Controller {
             throw new SQLException(
                     "User doesn't have the required privileges.");
         return BookModel.updateBook(book, oldBookIsbn);
+    }
+
+    public int getCartTotPrice() {
+        return totPrice;
+    }
+
+    public int getCartSize() {
+        return currBooks.size();
     }
 
     public boolean placeOrder(Order order) throws SQLException {
@@ -173,16 +182,11 @@ public class Controller {
     public boolean addToCart(Book book, int numberOfCopies) {
         currBooks.add(book.getIsbn());
         currCopies.add(numberOfCopies);
+        totPrice += numberOfCopies * book.getPrice();
         return true;
     }
 
     public List<Category> getCategories() throws SQLException {
-        // List<Category>ret = new ArrayList<Category>();
-        // Category c = new Category();
-        // c.setProperty("id", "5");
-        // c.setProperty("type", "lol");
-        // ret.add(c);
-        // return ret;
         return BookModel.getCategories();
     }
 
@@ -191,7 +195,9 @@ public class Controller {
      *             with error message to be shown in case of failure
      */
     public boolean checkOutCart(String cardNum) throws SQLException {
-        // TODO Auto-generated method stub
+        if (currBooks.size() == 0) {
+            throw new SQLException("Cart is empty.");
+        }
         BookModel.checkOut(currBooks, currCopies, currUser.getUserName(),
                 cardNum);
         currBooks.clear();
@@ -204,12 +210,12 @@ public class Controller {
      *             with error message to be shown in case of failure
      */
     public void promoteUser(String userName) throws SQLException {
-        // TODO
         if (!checkIfManager())
             throw new SQLException(
                     "User doesn't have the required privileges.");
         User user = UserModel.getUser(userName);
         user.setProperty("manager", "1");
+        System.out.println(user);
         UserModel.updateUser(user, userName);
     }
 

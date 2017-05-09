@@ -83,14 +83,14 @@ public class UserModel {
 			user.setProperty("lastname", result.getString("lastname"));
 			user.setProperty("password", result.getString("password"));
 			user.setProperty("email", result.getString("email"));
+			user.setProperty("manager", result.getString("manager"));
 			user.setProperty("phone", result.getString("phone"));
 			user.setProperty("address", result.getString("address"));
 			user.setProperty("created", result.getString("created"));
 			user.setProperty("manager", result.getString("manager"));
 			return user;
 		}else{
-			System.out.println("User not found");
-			return null;
+			throw new SQLException("User not found");
 		}
 	}
 	public static List<User> getUsers() throws SQLException{
@@ -165,7 +165,7 @@ public class UserModel {
 		cols.add("password");
 		vals.add(user.getPassword());
 		cols.add("manager");
-		vals.add("0");
+		vals.add(""+user.isManager());
 		cols.add("email");
 		vals.add(user.getEmail());
 		cols.add("phone");
