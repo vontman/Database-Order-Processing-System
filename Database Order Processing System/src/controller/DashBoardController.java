@@ -48,6 +48,7 @@ public class DashBoardController {
     
     @FXML
     private TableColumn<BookView, String> titleCol, isbnCol, authorsCol, publisherCol, yearCol, categoryCol;
+    private TableColumn col_action;
     
     @FXML
     private TableColumn<BookView, Integer> priceCol, copiesCol;
@@ -241,7 +242,8 @@ public class DashBoardController {
         priceCol.setCellValueFactory(cellData -> cellData.getValue().getPriceProb().asObject());
         copiesCol.setCellValueFactory(cellData -> cellData.getValue().getCopiesProb().asObject());
         
-        TableColumn col_action = new TableColumn<>("Action");
+        col_action = new TableColumn<>("Action");
+        col_action.setPrefWidth(125);
         bookTableView.getColumns().add(col_action);
         
         col_action.setCellValueFactory(
@@ -307,19 +309,18 @@ public class DashBoardController {
         }
     }
     public void setManagerView(boolean isManager) {
+        System.out.println("Manager = " + isManager);
         mngrPanel.setExpanded(isManager);
         mngrPanel.setVisible(isManager);
-
-        // TODO remove copies, threshold ... from table
-        // TODO make table editable for update
     }
 
     public void showBooks(List<Book> books) {
-    	this.books.clear();
+        this.books.clear();
         for(Book book : books){
         	BookView bookView = new BookView(book);
         	this.books.add(bookView);
         }
+        this.bookTableView.refresh();
     }
 
     @FXML

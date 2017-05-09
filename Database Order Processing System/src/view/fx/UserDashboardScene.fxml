@@ -119,7 +119,7 @@
             <center>
               <ScrollPane prefHeight="200.0" prefWidth="200.0">
                 <content>
-                  <TableView fx:id="bookTableView" editable="true" focusTraversable="true" prefHeight="366.0" prefWidth="763.0" tableMenuButtonVisible="false">
+                  <TableView fx:id="bookTableView" editable="true" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" tableMenuButtonVisible="false">
                     <columns>
                       <TableColumn prefWidth="75.0" text="Isbn" fx:id="isbnCol" />
                       <TableColumn prefWidth="75.0" text="Title" fx:id="titleCol" />
@@ -157,8 +157,7 @@
                           <Label text="Publication year:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                           <ChoiceBox id="srchBkTitleCB" fx:id="srchBkCategoryCB" prefWidth="210.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
                             <items>
-                              <FXCollections fx:factory="observableArrayList">
-                              </FXCollections>
+                              <FXCollections fx:factory="observableArrayList" />
                             </items>
                           </ChoiceBox>
                           <Label text="Category:" GridPane.columnIndex="2" GridPane.rowIndex="2" />

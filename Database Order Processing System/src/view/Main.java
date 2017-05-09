@@ -57,6 +57,7 @@ public class Main extends Application {
                         .<DashBoardController> getController();
                 Controller.getInstance().setDashBoardController(udController);
             }
+            System.out.println(user.isManager());
             if (user.isManager()==1)
                 primaryStage.setTitle("Book Shopping - Manager!");
             else

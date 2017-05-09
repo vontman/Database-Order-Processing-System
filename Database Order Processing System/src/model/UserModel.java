@@ -86,6 +86,7 @@ public class UserModel {
 			user.setProperty("phone", result.getString("phone"));
 			user.setProperty("address", result.getString("address"));
 			user.setProperty("created", result.getString("created"));
+			user.setProperty("manager", result.getString("manager"));
 			return user;
 		}else{
 			System.out.println("User not found");
@@ -109,6 +110,7 @@ public class UserModel {
 			user.setProperty("phone", result.getString("phone"));
 			user.setProperty("address", result.getString("address"));
 			user.setProperty("created", result.getString("created"));
+			user.setProperty("manager", result.getString("manager"));
 			users.add(user);
 		}
 		return users;

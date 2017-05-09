@@ -87,6 +87,10 @@ CREATE TABLE IF NOT EXISTS `Book_Order`.`User` (
   `Manager` TINYINT NOT NULL,
   `FirstName` VARCHAR(45) NOT NULL,
   `LastName` VARCHAR(45) NOT NULL,
+  `Email` VARCHAR(512) NOT NULL,
+  `Phone` VARCHAR(20),
+  `Address` VARCHAR(2048),
+
   PRIMARY KEY (`Username`),
   UNIQUE INDEX `Username_UNIQUE` (`Username` ASC))
 ENGINE = InnoDB;
@@ -267,9 +271,10 @@ Insert into book values ('1', 'Cracking the coding interview', 7, date('2002-12-
 Insert into book values ('2', 'Introduction to Algorithms', 5, date('2002-12-2'), 1, 'Gayle lack macdwel', 2, 300);
 Insert into book values ('3', 'Competetive', 4, date('2002-12-2'), 1, 'Gayle lack macdwel', 2, 300);
 Insert into book values ('4', 'No Name', 6, date('2002-12-2'), 1, 'Gayle lack macdwel', 2, 300);
+Insert into user values ('root', '123', date('2011-12-2'), 1, 'zoz', 'boz', 'anababyaa@root.com', '', '');
 #Update book set book.Copies = -1 where book.ISBN = '1';
-Update book set book.Copies = 1 where ISBN = '4';
-Update book set book.Copies = 1 where ISBN = '4';
+Update Book set book.Copies = 1 where ISBN = '4';
+Update Book set book.Copies = 1 where ISBN = '4';
 select * from orders;
 #select copies from book where isbn = '4';
 #delete from orders where book_ISBN = '4';
